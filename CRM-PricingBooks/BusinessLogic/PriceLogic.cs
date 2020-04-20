@@ -27,6 +27,7 @@ namespace CRM_PricingBooks.BusinessLogic
             foreach (PricingBook listPB in allProducts)
             {
                 fillPriceList(pricesLists, listPB);
+                
             }
 
             return pricesLists;
@@ -48,5 +49,46 @@ namespace CRM_PricingBooks.BusinessLogic
             });
 
         }
+        private void deleteProduct(List<PricingBookDTO> pricesLists, PricingBook listPB)
+        {
+            int count = 0;
+            foreach (PricingBookDTO product in pricesLists)
+            {
+                count += 1;
+                if (product.Equals(listPB))
+                {
+                    pricesLists.RemoveAt(count);
+                    break;
+                }
+            }
+            /*
+            pricesLists.Remove(new PricingBookDTO()
+            {
+                Name = listPB.Name,
+                Description = listPB.Description,
+                //DELETE status, fill it depending if it's active or not 
+                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice,
+                    //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
+                })
+            }); ;
+            */
+        }
+        private void updateProduct(List<PricingBookDTO> listProducts, PricingBook productU)
+        {
+            foreach (PricingBookDTO product in listProducts)
+            {
+                if (product.Equals(productU))
+                {
+                    product.Name = "";
+                    product.Description = "";
+                   
+                    break;
+                }
+            }
+        }
+
     }
 }
