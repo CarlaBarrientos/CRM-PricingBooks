@@ -24,7 +24,29 @@ namespace CRM_PricingBooks.BusinessLogic
 
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
 
+            foreach (PricingBook listPB in allProducts)
+            {
+                fillPriceList(pricesLists, listPB);
+            }
+
             return pricesLists;
+        }
+
+        public void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
+        {
+            pricesLists.Add(new PricingBookDTO() 
+            {
+                Name = listPB.Name, 
+                Description = listPB.Description, 
+                //add field status, fill it depending if it's active or not 
+                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice,
+                    //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
+                }) 
+            });
+
         }
     }
 }
