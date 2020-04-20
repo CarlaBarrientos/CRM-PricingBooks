@@ -4,14 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM_PricingBooks.BusinessLogic;
 
 namespace CRM_PricingBooks.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/pricingBooks")]
     [ApiController]
 
     public class PricingBookController : ControllerBase
-    {   /*
+    {   
         private readonly IPriceLogic _priceLogic;
 
         public PricingBookController(IPriceLogic pricelogic)
@@ -22,8 +23,8 @@ namespace CRM_PricingBooks.Controllers
         [HttpGet]
         public IEnumerable<PricingBookDTO> GetAll()
         {
-            return _priceLogic.GetPriceProducts();
+            return _priceLogic.GetPricingBooks();
         }
-        */
+        
     }
 }
