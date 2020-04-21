@@ -27,68 +27,55 @@ namespace CRM_PricingBooks.BusinessLogic
             foreach (PricingBook listPB in allProducts)
             {
                 fillPriceList(pricesLists, listPB);
-
+                //Update(1,"1", "1",pricesLists, listPB);
             }
-          
+
+
             return pricesLists;
         }
 
         public void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
-            pricesLists.Add(new PricingBookDTO() 
+            pricesLists.Add(new PricingBookDTO()
             {
-                Name = listPB.Name, 
-                Description = listPB.Description, 
+                Id = listPB.Id,
+                Name = listPB.Name,
+                Description = listPB.Description,
                 //add field status, fill it depending if it's active or not 
                 ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
                     //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
-                }) 
+                })
             });
 
         }
-        private void deleteProduct(List<PricingBookDTO> pricesLists, PricingBook listPB)
+        public void deleteProduct(int id, List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
-            int count = 0;
             foreach (PricingBookDTO product in pricesLists)
             {
-                count += 1;
-                if (product.Equals(listPB))
+                if (product.Id == id)
                 {
-                    pricesLists.RemoveAt(count);
+                    pricesLists.Remove(product);
                     break;
                 }
             }
-            /*
-            pricesLists.Remove(new PricingBookDTO()
-            {
-                Name = listPB.Name,
-                Description = listPB.Description,
-                //DELETE status, fill it depending if it's active or not 
-                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
-                {
-                    ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-                    //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
-                })
-            }); ;
-            */
+
         }
-        private void updateProduct(List<PricingBookDTO> listProducts, PricingBook productU)
+        public void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
-            foreach (PricingBookDTO product in listProducts)
+            foreach (PricingBookDTO product in pricesLists)
             {
-                if (product.Equals(productU))
+                if (product.Id == id)
                 {
-                    product.Name = "";
-                    product.Description = "";
-                   
+                    product.Name = Name;
+                    product.Description =Description;
                     break;
                 }
             }
         }
+       
         private PricingBook readListProduct(List<PricingBook> listProducts, PricingBook productR)
         {
             PricingBook showProduct = null;
