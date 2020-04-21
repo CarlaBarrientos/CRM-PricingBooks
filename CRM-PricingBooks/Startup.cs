@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using CRM_PricingBooks.BusinessLogic;
+using CRM_PricingBooks.Database;
 
 namespace CRM_PricingBooks
 {
@@ -26,6 +28,8 @@ namespace CRM_PricingBooks
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddTransient<IPriceLogic, PriceLogic>();
+            services.AddTransient<IPricingBookDB, PricingBookDB>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
