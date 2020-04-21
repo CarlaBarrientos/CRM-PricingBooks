@@ -27,9 +27,9 @@ namespace CRM_PricingBooks.BusinessLogic
             foreach (PricingBook listPB in allProducts)
             {
                 fillPriceList(pricesLists, listPB);
-                
-            }
 
+            }
+          
             return pricesLists;
         }
 
@@ -88,6 +88,18 @@ namespace CRM_PricingBooks.BusinessLogic
                     break;
                 }
             }
+        }
+        private PricingBook readListProduct(List<PricingBook> listProducts, PricingBook productR)
+        {
+            PricingBook showProduct = null;
+            foreach (PricingBook product in listProducts)
+            {
+                if (product.Equals(productR))
+                {
+                    showProduct = product;
+                }
+            }
+            return showProduct;
         }
 
     }
