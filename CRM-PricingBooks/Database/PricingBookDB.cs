@@ -47,7 +47,8 @@ namespace CRM_PricingBooks.Database
                     }
                 },
                 new PricingBook()
-                { 
+                {
+                     Id=3,
                     Name="Lista de precios 2018", 
                     Description="Lista de precios de la gestión 2018", 
                     ProductsList = new List<ProductPrice>()
@@ -63,7 +64,8 @@ namespace CRM_PricingBooks.Database
                     }
                 },
                 new PricingBook()
-                { 
+                {
+                    Id=4,
                     Name="Lista de precios 2017", 
                     Description="Lista de precios de la gestión 2017", 
                     ProductsList = new List<ProductPrice>()
@@ -79,7 +81,8 @@ namespace CRM_PricingBooks.Database
                     }
                 },
                 new PricingBook()
-                { 
+                {
+                     Id=5,
                     Name="Lista de precios 2016", 
                     Description="Lista de precios de la gestión 2016", 
                     ProductsList = new List<ProductPrice>()

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM_PricingBooks.BusinessLogic;
-using CRM_PricingBooks.Database.Models;
+
 namespace CRM_PricingBooks.Controllers
 {
     [Route("api/pricingBooks")]
@@ -25,12 +25,13 @@ namespace CRM_PricingBooks.Controllers
         {
             return _priceLogic.GetPricingBooks();
         }
-        /*
+        
         [HttpDelete("{id}")]
-        public void Delete(int id, List<PricingBookDTO> pricesLists, PricingBook listPB)
+        public void Delete(int id,List<PricingBookDTO> pricesLists)
         {
-            _priceLogic.deleteProduct(1, pricesLists, listPB);
+        //    _priceLogic.deleteProduct(id,pricesLists);
+
         }
-        */
+        
     }
 }

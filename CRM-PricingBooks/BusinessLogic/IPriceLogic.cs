@@ -10,5 +10,6 @@ namespace CRM_PricingBooks.BusinessLogic
     public interface IPriceLogic
     {
         public List<PricingBookDTO> GetPricingBooks();
+        //public void deleteProduct(int id, List<PricingBookDTO> pricesLists);
     }
 }
