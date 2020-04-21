@@ -51,7 +51,7 @@ namespace CRM_PricingBooks.BusinessLogic
             });
 
         }
-        public void deleteProduct(int id, List<PricingBookDTO> pricesLists, PricingBook listPB)
+        private void deleteProduct(int id, List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
             foreach (PricingBookDTO product in pricesLists)
             {
@@ -63,7 +63,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-        public void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists, PricingBook listPB)
+        private void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
             foreach (PricingBookDTO product in pricesLists)
             {
@@ -76,18 +76,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
         }
        
-        private PricingBook readListProduct(List<PricingBook> listProducts, PricingBook productR)
-        {
-            PricingBook showProduct = null;
-            foreach (PricingBook product in listProducts)
-            {
-                if (product.Equals(productR))
-                {
-                    showProduct = product;
-                }
-            }
-            return showProduct;
-        }
+       
 
     }
 }
