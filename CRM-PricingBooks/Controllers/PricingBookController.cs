@@ -26,5 +26,12 @@ namespace CRM_PricingBooks.Controllers
             return _priceLogic.GetPricingBooks();
         }
         
+        [HttpDelete("{id}")]
+        public void Delete(int id,List<PricingBookDTO> pricesLists)
+        {
+        //    _priceLogic.deleteProduct(id,pricesLists);
+
+        }
+        
     }
 }

@@ -25,9 +25,15 @@ namespace CRM_PricingBooks.BusinessLogic
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
 
            foreach (PricingBook listPB in allProducts)
-         {
+           {
                 fillPriceList(pricesLists, listPB);
+
+                //Update(1,"1", "1",pricesLists, listPB);
+            }
+
          }
+
+
 
             return pricesLists;
         }
@@ -35,18 +41,60 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             pricesLists.Add(new PricingBookDTO()
             {
+
+                Id = listPB.Id,
+                Name = listPB.Name,
+                Description = listPB.Description,
+                //add field status, fill it depending if it's active or not 
+
                 Name = listPB.Name,
                 Description = listPB.Description,
                 //add field status, fill it depending if it's active or not
+
                 ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
+
+                    //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
+
                     PromotionPrice = calculatediscount("XMAS", product.FixedPrice)//change this price if there is any active campaign
+
                 })
             });
 
         }
+
+        private void deleteProduct(int id, List<PricingBookDTO> pricesLists)
+        {
+
+            foreach (PricingBookDTO product in pricesLists)
+            {
+                if (product.Id == id)
+                {
+                    pricesLists.Remove(product);
+                    break;
+                }
+            }
+
+        }
+        private void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists)
+        {
+            
+
+            foreach (PricingBookDTO product in pricesLists)
+            {
+                if (product.Id == id)
+                {
+                    product.Name = Name;
+                    product.Description =Description;
+                    break;
+                }
+            }
+        }
+       
+       
+
      private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
     {
 
@@ -70,6 +118,7 @@ namespace CRM_PricingBooks.BusinessLogic
        return price;
 
     }
+
 
     }
 }

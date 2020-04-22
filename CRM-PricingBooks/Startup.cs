@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using CRM_PricingBooks.BusinessLogic;
 using CRM_PricingBooks.Database;
+using Microsoft.OpenApi.Models;
 
 namespace CRM_PricingBooks
 {
@@ -30,6 +31,14 @@ namespace CRM_PricingBooks
             services.AddControllers();
             services.AddTransient<IPriceLogic, PriceLogic>();
             services.AddTransient<IPricingBookDB, PricingBookDB>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Group",
+                    Version = "v1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +58,12 @@ namespace CRM_PricingBooks
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Group Selector");
             });
         }
     }
