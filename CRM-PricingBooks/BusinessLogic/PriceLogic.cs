@@ -30,14 +30,10 @@ namespace CRM_PricingBooks.BusinessLogic
 
                 //Update(1,"1", "1",pricesLists, listPB);
             }
-
-         }
-
-
-
             return pricesLists;
+
         }
-        public void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
+        private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
             pricesLists.Add(new PricingBookDTO()
             {
@@ -47,9 +43,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 Description = listPB.Description,
                 //add field status, fill it depending if it's active or not 
 
-                Name = listPB.Name,
-                Description = listPB.Description,
-                //add field status, fill it depending if it's active or not
+             
 
                 ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
@@ -65,7 +59,7 @@ namespace CRM_PricingBooks.BusinessLogic
 
         }
 
-        private void deleteProduct(int id, List<PricingBookDTO> pricesLists)
+        private void deleteProduct(int id, List<PricingBookDTO>pricesLists)
         {
 
             foreach (PricingBookDTO product in pricesLists)
@@ -80,45 +74,48 @@ namespace CRM_PricingBooks.BusinessLogic
         }
         private void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists)
         {
-            
+
 
             foreach (PricingBookDTO product in pricesLists)
             {
                 if (product.Id == id)
                 {
                     product.Name = Name;
-                    product.Description =Description;
+                    product.Description = Description;
                     break;
                 }
             }
         }
-       
-       
 
-     private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
-    {
 
-      if(activeCampaign == "XMAS")
-      {
-        price = price - price * (0.05);
 
-       }
-      if(activeCampaign == "SUMMER")
-      {
-        price = price - price * (0.20);
-      }
-      if(activeCampaign == "BFRIDAY")
-      {
-        price = price - price * (0.25);
-      }
-      else
-      {
-        return price;
-      }
-       return price;
+        private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
+        {
+
+            if (activeCampaign == "XMAS")
+            {
+                price = price - price * (0.05);
+
+            }
+            if (activeCampaign == "SUMMER")
+            {
+                price = price - price * (0.20);
+            }
+            if (activeCampaign == "BFRIDAY")
+            {
+                price = price - price * (0.25);
+            }
+            else
+            {
+                return price;
+            }
+            return price;
+
+        }
+
+
 
     }
 
 
-    }
 }
