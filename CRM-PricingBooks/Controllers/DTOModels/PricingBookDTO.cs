@@ -12,7 +12,7 @@ namespace CRM_PricingBooks.Controllers.DTOModels
 
         public string Description { get; set; }
 
-        public string Status { get; set; }
+        public bool Status { get; set; }
 
         public List<ProductPriceDTO> ProductPrices { get; set; }
     }
