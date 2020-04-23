@@ -35,27 +35,29 @@ namespace CRM_PricingBooks.BusinessLogic
         }
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
-            pricesLists.Add(new PricingBookDTO()
+            List<PricingBook> allProducts = _productTableDB.GetAll();
+            List<PricingBook> filteredList = allProducts.Where(x => (x.Status == true)).ToList();
+
+            if(filteredList.Count > 0 && pricesLists.Count == 0)
             {
-
-                Id = listPB.Id,
-                Name = listPB.Name,
-                Description = listPB.Description,
-                //add field status, fill it depending if it's active or not 
-
-             
-
-                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                
+                foreach (PricingBook pb in filteredList)
                 {
-                    ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-
-                    //PromotionPrice = product.FixedPrice//change this price if there is any active campaign
-
-                    PromotionPrice = calculatediscount("XMAS", product.FixedPrice)//change this price if there is any active campaign
-
-                })
-            });
+                    pricesLists.Add(new PricingBookDTO()
+                    {
+                        Id = listPB.Id,
+                        Name = pb.Name,
+                        Description = pb.Description,
+                        Status = pb.Status,          //add field status, fill it depending if it's active or not 
+                        ProductPrices = pb.ProductsList.ConvertAll(product => new ProductPriceDTO
+                        {
+                            ProductCode = product.ProductCode,
+                            FixedPrice = product.FixedPrice,
+                            PromotionPrice = calculatediscount("XMAS", product.FixedPrice)//change this price if there is any active campaign
+                        })
+                    });
+                }
+            }
 
         }
 

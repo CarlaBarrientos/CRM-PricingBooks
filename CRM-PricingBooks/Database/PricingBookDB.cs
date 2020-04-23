@@ -16,7 +16,8 @@ namespace CRM_PricingBooks.Database
                 {
                     Id=1,
                     Name="Lista de precios 2020", 
-                    Description="Lista de precios de la gestión 2020", 
+                    Description="Lista de precios de la gestión 2020",
+                    Status = true,
                     ProductsList = new List<ProductPrice>()
                     {
                         new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=200},
@@ -33,7 +34,8 @@ namespace CRM_PricingBooks.Database
                 { 
                     Id=2,
                     Name="Lista de precios 2019", 
-                    Description="Lista de precios de la gestión 2019", 
+                    Description="Lista de precios de la gestión 2019",
+                    Status = false,
                     ProductsList = new List<ProductPrice>()
                     {
                         new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=190},
@@ -50,7 +52,8 @@ namespace CRM_PricingBooks.Database
                 {
                      Id=3,
                     Name="Lista de precios 2018", 
-                    Description="Lista de precios de la gestión 2018", 
+                    Description="Lista de precios de la gestión 2018",
+                    Status = false,
                     ProductsList = new List<ProductPrice>()
                     {
                         new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=180},
@@ -67,7 +70,8 @@ namespace CRM_PricingBooks.Database
                 {
                     Id=4,
                     Name="Lista de precios 2017", 
-                    Description="Lista de precios de la gestión 2017", 
+                    Description="Lista de precios de la gestión 2017",
+                    Status = false,
                     ProductsList = new List<ProductPrice>()
                     {
                         new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=170},
@@ -84,7 +88,8 @@ namespace CRM_PricingBooks.Database
                 {
                      Id=5,
                     Name="Lista de precios 2016", 
-                    Description="Lista de precios de la gestión 2016", 
+                    Description="Lista de precios de la gestión 2016",
+                    Status = false,
                     ProductsList = new List<ProductPrice>()
                     {
                         new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=165},
