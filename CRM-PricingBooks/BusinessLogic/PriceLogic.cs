@@ -114,10 +114,6 @@ namespace CRM_PricingBooks.BusinessLogic
             return price;
 
         }
-
-
-
     }
-
-
 }
+    
