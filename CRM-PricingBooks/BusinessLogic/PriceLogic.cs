@@ -17,7 +17,7 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             _productTableDB = productTableDB;
         }
-
+        //FUNCIONA------------------------------------------------------
         public List<PricingBookDTO> GetPricingBooks() {
 
             List<PricingBook> allProducts = _productTableDB.GetAll(); //Retreive all books from databse
@@ -28,11 +28,14 @@ namespace CRM_PricingBooks.BusinessLogic
            {
                 fillPriceList(pricesLists, listPB);
 
-                //Update(1,"1", "1",pricesLists, listPB);
+                //UpdateListProduct(listPB, 1);
             }
+            DeleteListProduct(1);
+
             return pricesLists;
 
         }
+        //FUNCIONA-------------------------------------------
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();
@@ -43,6 +46,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 
                 foreach (PricingBook pb in filteredList)
                 {
+                   
                     pricesLists.Add(new PricingBookDTO()
                     {
                         Id = listPB.Id,
@@ -60,35 +64,40 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-
-        private void deleteProduct(int id, List<PricingBookDTO>pricesLists)
+        //NO FUNCIONA----------------------------------------
+        public void DeleteListProduct(int id)
         {
-
-            foreach (PricingBookDTO product in pricesLists)
+            List<PricingBook> allProducts = _productTableDB.GetAll();
+            foreach (PricingBook product in allProducts)
             {
                 if (product.Id == id)
                 {
-                    pricesLists.Remove(product);
+                    allProducts.Remove(product);
                     break;
                 }
             }
 
         }
-        private void Update(int id, string Name, string Description, List<PricingBookDTO> pricesLists)
+        //NO FUNCIONA-----------------------------------
+        public void UpdateListProduct(PricingBookDTO productToUpdate, int id)
         {
+            List<PricingBook> allProducts = _productTableDB.GetAll();
 
-
-            foreach (PricingBookDTO product in pricesLists)
+           
+            foreach (PricingBook product in allProducts)
             {
                 if (product.Id == id)
                 {
-                    product.Name = Name;
-                    product.Description = Description;
+                    product.Name = productToUpdate.Name;
+                    product.Description = productToUpdate.Description;
                     break;
                 }
             }
         }
-
+        public void AddNewListProduct(PricingBookDTO newProduct) { 
+        
+        
+        }
 
 
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
@@ -114,10 +123,6 @@ namespace CRM_PricingBooks.BusinessLogic
             return price;
 
         }
-
-
-
     }
-
-
 }
+    

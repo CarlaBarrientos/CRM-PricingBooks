@@ -25,13 +25,30 @@ namespace CRM_PricingBooks.Controllers
         {
             return _priceLogic.GetPricingBooks();
         }
-        
-        [HttpDelete("{id}")]
-        public void Delete(int id,List<PricingBookDTO> pricesLists)
+
+        [HttpPost]
+        [Route("Productlists")]
+        public void Post([FromBody]PricingBookDTO newPriceBookDTO)
         {
-        //    _priceLogic.deleteProduct(id,pricesLists);
+
+            _priceLogic.AddNewListProduct(newPriceBookDTO);
+        }
+
+        // PUT: api/Student/12345
+        [HttpPut]
+        [Route("products/{id}")]
+        public void Put([FromBody]PricingBookDTO productToUpdate, int id) // id=Code:12345
+        {
+            _priceLogic.UpdateListProduct(productToUpdate,id);
+        }
+
+        [HttpDelete]
+        [Route("products/{id}")]
+        public void Delete(int id) // CI:65008816
+        {
+            _priceLogic.DeleteListProduct(id);
 
         }
-        
+
     }
 }

@@ -27,10 +27,15 @@ namespace CRM_PricingBooks
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {   
             services.AddControllers();
+
             services.AddTransient<IPriceLogic, PriceLogic>();
-            services.AddTransient<IPricingBookDB, PricingBookDB>();
+            services.AddSingleton<IPricingBookDB, PricingBookDB>();
+
+            services.AddTransient<IProductLogic, ProductLogic>();
+            services.AddSingleton<IProductDB, ProductDB>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
