@@ -27,29 +27,7 @@ namespace CRM_PricingBooks.BusinessLogic
             // Add to DB
             _productDB.AddNew(productprice);
         }
-        private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
-        {
-
-            if (activeCampaign == "XMAS")
-            {
-                price = price - price * (0.05);
-
-            }
-            if (activeCampaign == "SUMMER")
-            {
-                price = price - price * (0.20);
-            }
-            if (activeCampaign == "BFRIDAY")
-            {
-                price = price - price * (0.25);
-            }
-            else
-            {
-                return price;
-            }
-            return price;
-
-        }
+       
 
         public void UpdateProduct(ProductPriceDTO productToUpdate,string id)
         {
@@ -74,6 +52,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 if (product.ProductCode.Equals(code))
                 {
                     allProducts.Remove(product);
+
                     break;
                 }
             }
@@ -95,6 +74,7 @@ namespace CRM_PricingBooks.BusinessLogic
 
                     }
                 );
+              
             }
 
             return products;

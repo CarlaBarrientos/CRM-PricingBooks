@@ -17,7 +17,7 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             _productTableDB = productTableDB;
         }
-
+        //FUNCIONA------------------------------------------------------
         public List<PricingBookDTO> GetPricingBooks() {
 
             List<PricingBook> allProducts = _productTableDB.GetAll(); //Retreive all books from databse
@@ -28,11 +28,14 @@ namespace CRM_PricingBooks.BusinessLogic
            {
                 fillPriceList(pricesLists, listPB);
 
-                //Update(1,"1", "1",pricesLists, listPB);
+                //UpdateListProduct(listPB, 1);
             }
+            DeleteListProduct(1);
+
             return pricesLists;
 
         }
+        //FUNCIONA-------------------------------------------
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();
@@ -61,7 +64,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-
+        //NO FUNCIONA----------------------------------------
         public void DeleteListProduct(int id)
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();
@@ -75,11 +78,12 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
+        //NO FUNCIONA-----------------------------------
         public void UpdateListProduct(PricingBookDTO productToUpdate, int id)
         {
-
-
             List<PricingBook> allProducts = _productTableDB.GetAll();
+
+           
             foreach (PricingBook product in allProducts)
             {
                 if (product.Id == id)
