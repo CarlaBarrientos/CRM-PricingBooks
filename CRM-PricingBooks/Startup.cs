@@ -34,7 +34,7 @@ namespace CRM_PricingBooks
             services.AddSingleton<IPricingBookDB, PricingBookDB>();
 
             services.AddTransient<IProductLogic, ProductLogic>();
-            services.AddSingleton<IProductDB, ProductDatabase>();
+            services.AddSingleton<IProductDB, ProductDB>();
 
             services.AddSwaggerGen(c =>
             {

@@ -6,7 +6,7 @@ using CRM_PricingBooks.Database.Models;
 
 namespace CRM_PricingBooks.Database
 {
-    public class ProductDatabase:IProductDB
+    public class ProductDB:IProductDB
     {
         private List<ProductPrice> Product
         {
@@ -14,7 +14,7 @@ namespace CRM_PricingBooks.Database
             set;
         }
 
-        public ProductDatabase()
+        public ProductDB()
         {
             Product = new List<ProductPrice>();
         }

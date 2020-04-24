@@ -17,9 +17,10 @@ namespace CRM_PricingBooks.BusinessLogic
         }
         public void AddNewProduct(ProductPriceDTO newProduct)
         {
+           
             // Mappers
             ProductPrice productprice = new ProductPrice();
-            productprice.ProductCode = newProduct.ProductCode;
+            productprice.ProductCode = Convert.ToString(new Random().Next(1,100));
             productprice.FixedPrice = newProduct.FixedPrice;
 
             // Logic calculation            
@@ -69,8 +70,8 @@ namespace CRM_PricingBooks.BusinessLogic
                     new ProductPriceDTO()
                     {
                         ProductCode = product.ProductCode,
-                        PromotionPrice = product.FixedPrice
-                        //calculatediscount("XMAS", product.FixedPrice)//change this price if there is any active campaign
+                        FixedPrice=product.FixedPrice,
+                        PromotionPrice = calculatediscount("XMAS", product.FixedPrice)
 
                     }
                 );
@@ -79,7 +80,30 @@ namespace CRM_PricingBooks.BusinessLogic
 
             return products;
         }
+        private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
+        {
 
-       
+            if (activeCampaign == "XMAS")
+            {
+                price = price - price * (0.05);
+
+            }
+            if (activeCampaign == "SUMMER")
+            {
+                price = price - price * (0.20);
+            }
+            if (activeCampaign == "BFRIDAY")
+            {
+                price = price - price * (0.25);
+            }
+            else
+            {
+                return price;
+            }
+            return price;
+
+        }
+
+
     }
 }
