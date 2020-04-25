@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CRM_PricingBooks.Controllers.DTOModels;
+
+using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
 
@@ -43,16 +44,16 @@ namespace CRM_PricingBooks.BusinessLogic
 
             if(filteredList.Count > 0 && pricesLists.Count == 0)
             {
-                
+
                 foreach (PricingBook pb in filteredList)
                 {
-                   
+
                     pricesLists.Add(new PricingBookDTO()
                     {
                         Id = listPB.Id,
                         Name = pb.Name,
                         Description = pb.Description,
-                        Status = pb.Status,          //add field status, fill it depending if it's active or not 
+                        Status = pb.Status,          //add field status, fill it depending if it's active or not
                         ProductPrices = pb.ProductsList.ConvertAll(product => new ProductPriceDTO
                         {
                             ProductCode = product.ProductCode,
@@ -83,7 +84,7 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();
 
-           
+
             foreach (PricingBook product in allProducts)
             {
                 if (product.Id == id)
@@ -94,9 +95,9 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
             }
         }
-        public void AddNewListProduct(PricingBookDTO newProduct) { 
-        
-        
+        public void AddNewListProduct(PricingBookDTO newProduct) {
+
+
         }
 
 
@@ -125,4 +126,3 @@ namespace CRM_PricingBooks.BusinessLogic
         }
     }
 }
-    

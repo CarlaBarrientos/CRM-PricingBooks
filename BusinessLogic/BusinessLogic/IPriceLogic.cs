@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CRM_PricingBooks.Controllers.DTOModels;
+using CRM_PricingBooks.DTOModels;
 
-using CRM_PricingBooks.Database.Models;
+
 
 
 
