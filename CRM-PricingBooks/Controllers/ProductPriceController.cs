@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
 using CRM_PricingBooks.BusinessLogic;
-using CRM_PricingBooks.Controllers.DTOModels;
+using CRM_PricingBooks.DTOModels;
+using Microsoft.Extensions.Logging;
 
 namespace CRM_PricingBooks.Controllers
 {
@@ -32,7 +35,7 @@ namespace CRM_PricingBooks.Controllers
         [Route("products")]
         public void Post([FromBody]ProductPriceDTO newProductDTO)
         {
-           
+
             _productLogic.AddNewProduct(newProductDTO);
         }
 

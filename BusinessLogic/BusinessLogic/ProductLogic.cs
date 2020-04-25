@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using CRM_PricingBooks.Database;
-using CRM_PricingBooks.Controllers.DTOModels;
+using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database.Models;
+
 namespace CRM_PricingBooks.BusinessLogic
 {
     public class ProductLogic:IProductLogic
@@ -17,18 +19,18 @@ namespace CRM_PricingBooks.BusinessLogic
         }
         public void AddNewProduct(ProductPriceDTO newProduct)
         {
-           
+
             // Mappers
             ProductPrice productprice = new ProductPrice();
             productprice.ProductCode = Convert.ToString(new Random().Next(1,100));
             productprice.FixedPrice = newProduct.FixedPrice;
 
-            // Logic calculation            
+            // Logic calculation
 
             // Add to DB
             _productDB.AddNew(productprice);
         }
-       
+
 
         public void UpdateProduct(ProductPriceDTO productToUpdate,string id)
         {
@@ -75,7 +77,7 @@ namespace CRM_PricingBooks.BusinessLogic
 
                     }
                 );
-              
+
             }
 
             return products;
