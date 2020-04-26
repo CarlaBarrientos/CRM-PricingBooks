@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CRM_PricingBooks.Controllers
 {
-    [Route("api")]
+    [Route("crm")]
     [ApiController]
     public class ProductPriceController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpGet]
-        [Route("product")]
+        [Route("products")]
         public List<ProductPriceDTO> GetAll()
         {
 
