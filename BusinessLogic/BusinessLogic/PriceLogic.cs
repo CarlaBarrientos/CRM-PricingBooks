@@ -92,14 +92,69 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             PricingBook pbUpdated = new PricingBook();
 
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Id))
+            {
+                pbUpdated.Id = null;
+            }else
+            {
+                pbUpdated.Id = pricingBookToUpdate.Id;
+            }
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Name))
+            {
+                pbUpdated.Name = null;
+            }else
+            {
+                pbUpdated.Name = pricingBookToUpdate.Name;
+            }
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Description))
+            {
+                pbUpdated.Description = null;
+            }else
+            {
+                pbUpdated.Description = pricingBookToUpdate.Description;
+            }
+            /*if(pricingBookToUpdate.ProductPrices == null)
+            {
+                pbUpdated.ProductsList = null;
+                
+            }else
+            {*/
+                if(pricingBookToUpdate.ProductPrices.Count() != 0)
+                {
+                    pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });
+                }
+            //}
+            
+            Console.WriteLine("estamos en logic");
+
             PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
 
-            return new PricingBookDTO();
+            Console.WriteLine("despues de db");
+
+
+            return new PricingBookDTO()
+            {
+                Id = pbInDB.Id,
+                Name = pbInDB.Name,
+                Description = pbInDB.Description,
+                Status = pbInDB.Status,
+                ProductPrices = pbInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                })
+
+            };
 
         }
-        public void AddNewListProduct(PricingBookDTO newProduct) {
 
-
+        public void AddNewListProduct(PricingBookDTO newPricingBook) 
+        {
+            
         }
 
 

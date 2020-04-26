@@ -33,7 +33,6 @@ namespace CRM_PricingBooks.Controllers
         public void Post([FromBody]PricingBookDTO newPriceBookDTO)
         {
 
-            _priceLogic.AddNewListProduct(newPriceBookDTO);
         }
 
         // PUT: api/Student/12345
@@ -41,7 +40,6 @@ namespace CRM_PricingBooks.Controllers
         [Route("pricingbooks/{id}")]
         public PricingBookDTO Put([FromBody]PricingBookDTO pricingBookToUpdate, string id) // id=Code:12345
         {
-            Console.WriteLine("from swagger=>" + pricingBookToUpdate.Id+"-"+pricingBookToUpdate.Name+"-"+pricingBookToUpdate.Description+"-"+pricingBookToUpdate.Status+"-"+pricingBookToUpdate.ProductPrices);
             return _priceLogic.UpdateListProduct(pricingBookToUpdate, id);
         }
 
