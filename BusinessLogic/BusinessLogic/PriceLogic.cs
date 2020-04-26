@@ -21,49 +21,57 @@ namespace CRM_PricingBooks.BusinessLogic
         //FUNCIONA------------------------------------------------------
         public List<PricingBookDTO> GetPricingBooks() {
 
-            List<PricingBook> allProducts = _productTableDB.GetAll(); //Retreive all books from databse
-
+            List<PricingBook> allProducts = _productTableDB.GetAll();
+            List<PricingBook> filteredList = allProducts.Where(x => (x.Status == true)).ToList();
+            List<PricingBook> filteredListF = allProducts.Where(x => (x.Status == false)).ToList();
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
 
-           foreach (PricingBook listPB in allProducts)
-           {
-                fillPriceList(pricesLists, listPB);
+            if(filteredList.Count > 0 && pricesLists.Count == 0)
+            {
+                foreach (PricingBook listPB in filteredList)
+                {
+                    fillPriceList(pricesLists, listPB);
 
-                //UpdateListProduct(listPB, 1);
+                }
             }
-            DeleteListProduct(1);
+
+            foreach (PricingBook pb in filteredListF)
+            {
+                pricesLists.Add(new PricingBookDTO()
+                {
+                    Id = pb.Id.ToString(),
+                    Name = pb.Name,
+                    Description = pb.Description,
+                    Status = pb.Status,
+                    ProductPrices = pb.ProductsList.ConvertAll(product => new ProductPriceDTO
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice,
+                        PromotionPrice = product.FixedPrice
+                    })
+                });
+
+            }           
 
             return pricesLists;
 
         }
         //FUNCIONA-------------------------------------------
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
-        {
-            List<PricingBook> allProducts = _productTableDB.GetAll();
-            List<PricingBook> filteredList = allProducts.Where(x => (x.Status == true)).ToList();
-
-            if(filteredList.Count > 0 && pricesLists.Count == 0)
+        {           
+            pricesLists.Add(new PricingBookDTO()
             {
-
-                foreach (PricingBook pb in filteredList)
+                Id = listPB.Id.ToString(),
+                Name = listPB.Name,
+                Description = listPB.Description,
+                Status = listPB.Status,   
+                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
-
-                    pricesLists.Add(new PricingBookDTO()
-                    {
-                        Id = listPB.Id,
-                        Name = pb.Name,
-                        Description = pb.Description,
-                        Status = pb.Status,          //add field status, fill it depending if it's active or not
-                        ProductPrices = pb.ProductsList.ConvertAll(product => new ProductPriceDTO
-                        {
-                            ProductCode = product.ProductCode,
-                            FixedPrice = product.FixedPrice,
-                            PromotionPrice = calculatediscount("XMAS", product.FixedPrice)//change this price if there is any active campaign
-                        })
-                    });
-                }
-            }
-
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice,
+                    PromotionPrice = calculatediscount("XMAS", product.FixedPrice)
+                })
+            });
         }
         //NO FUNCIONA----------------------------------------
         public void DeleteListProduct(int id)
@@ -71,7 +79,7 @@ namespace CRM_PricingBooks.BusinessLogic
             List<PricingBook> allProducts = _productTableDB.GetAll();
             foreach (PricingBook product in allProducts)
             {
-                if (product.Id == id)
+                if (product.Id.Equals(id))
                 {
                     allProducts.Remove(product);
                     break;
@@ -80,24 +88,73 @@ namespace CRM_PricingBooks.BusinessLogic
 
         }
         //NO FUNCIONA-----------------------------------
-        public void UpdateListProduct(PricingBookDTO productToUpdate, int id)
+        public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
         {
-            List<PricingBook> allProducts = _productTableDB.GetAll();
+            PricingBook pbUpdated = new PricingBook();
 
-
-            foreach (PricingBook product in allProducts)
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Id))
             {
-                if (product.Id == id)
-                {
-                    product.Name = productToUpdate.Name;
-                    product.Description = productToUpdate.Description;
-                    break;
-                }
+                pbUpdated.Id = null;
+            }else
+            {
+                pbUpdated.Id = pricingBookToUpdate.Id;
             }
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Name))
+            {
+                pbUpdated.Name = null;
+            }else
+            {
+                pbUpdated.Name = pricingBookToUpdate.Name;
+            }
+            if(string.IsNullOrEmpty(pricingBookToUpdate.Description))
+            {
+                pbUpdated.Description = null;
+            }else
+            {
+                pbUpdated.Description = pricingBookToUpdate.Description;
+            }
+            /*if(pricingBookToUpdate.ProductPrices == null)
+            {
+                pbUpdated.ProductsList = null;
+                
+            }else
+            {*/
+                if(pricingBookToUpdate.ProductPrices.Count() != 0)
+                {
+                    pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });
+                }
+            //}
+            
+            Console.WriteLine("estamos en logic");
+
+            PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
+
+            Console.WriteLine("despues de db");
+
+
+            return new PricingBookDTO()
+            {
+                Id = pbInDB.Id,
+                Name = pbInDB.Name,
+                Description = pbInDB.Description,
+                Status = pbInDB.Status,
+                ProductPrices = pbInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                })
+
+            };
+
         }
-        public void AddNewListProduct(PricingBookDTO newProduct) {
 
-
+        public void AddNewListProduct(PricingBookDTO newPricingBook) 
+        {
+            
         }
 
 
