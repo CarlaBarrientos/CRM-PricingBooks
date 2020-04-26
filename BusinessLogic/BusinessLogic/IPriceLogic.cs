@@ -15,7 +15,7 @@ namespace CRM_PricingBooks.BusinessLogic
     {
         public List<PricingBookDTO> GetPricingBooks();
         void AddNewListProduct(PricingBookDTO newProduct);
-        void UpdateListProduct(PricingBookDTO productToUpdate, int id);
+        public PricingBookDTO UpdateListProduct(PricingBookDTO productToUpdate, string id);
         void DeleteListProduct(int id);
     }
 }

@@ -9,5 +9,6 @@ namespace CRM_PricingBooks.Database
     public interface IPricingBookDB
     {
         public List<PricingBook> GetAll();
+        public PricingBook Update(PricingBook pbToUpdate, string id);
     }
 }
