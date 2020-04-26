@@ -9,7 +9,7 @@ using CRM_PricingBooks.BusinessLogic;
 
 namespace CRM_PricingBooks.Controllers
 {
-    [Route("api/pricingBooks")]
+    [Route("crm")]
     [ApiController]
 
     public class PricingBookController : ControllerBase
@@ -28,7 +28,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpPost]
-        [Route("Productlists")]
+        [Route("pricingbooks")]
         public void Post([FromBody]PricingBookDTO newPriceBookDTO)
         {
 
@@ -37,14 +37,14 @@ namespace CRM_PricingBooks.Controllers
 
         // PUT: api/Student/12345
         [HttpPut]
-        [Route("products/{id}")]
+        [Route("pricingbooks/{id}")]
         public void Put([FromBody]PricingBookDTO productToUpdate, int id) // id=Code:12345
         {
             _priceLogic.UpdateListProduct(productToUpdate,id);
         }
 
         [HttpDelete]
-        [Route("products/{id}")]
+        [Route("pricingbooks/{id}")]
         public void Delete(int id) // CI:65008816
         {
             _priceLogic.DeleteListProduct(id);
