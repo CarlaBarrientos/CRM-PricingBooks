@@ -22,6 +22,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpGet]
+        [Route("pricingbooks")]
         public IEnumerable<PricingBookDTO> GetAll()
         {
             return _priceLogic.GetPricingBooks();
