@@ -31,7 +31,6 @@ namespace CRM_PricingBooks.BusinessLogic
 
                 //UpdateListProduct(listPB, 1);
             }
-            DeleteListProduct(1);
 
             return pricesLists;
 
@@ -65,7 +64,6 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-        //NO FUNCIONA----------------------------------------
         public void DeleteListProduct(int id)
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();
@@ -79,7 +77,6 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-        //NO FUNCIONA-----------------------------------
         public void UpdateListProduct(PricingBookDTO productToUpdate, int id)
         {
             List<PricingBook> allProducts = _productTableDB.GetAll();

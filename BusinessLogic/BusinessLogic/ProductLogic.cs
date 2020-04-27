@@ -17,7 +17,7 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             _productDB = productDB;
         }
-        public void AddNewProduct(ProductPriceDTO newProduct)
+        public ProductPriceDTO AddNewProduct(ProductPriceDTO newProduct)
         {
 
             // Mappers
@@ -25,40 +25,52 @@ namespace CRM_PricingBooks.BusinessLogic
             productprice.ProductCode = Convert.ToString(new Random().Next(1,100));
             productprice.FixedPrice = newProduct.FixedPrice;
 
-            // Logic calculation
 
             // Add to DB
-            _productDB.AddNew(productprice);
+           ProductPrice productINDB= _productDB.AddNew(productprice);
+             // Mappers => function: Productprices.FromEntityToDTO
+
+            return new ProductPriceDTO(){
+                ProductCode= productINDB.ProductCode,
+                FixedPrice=productINDB.FixedPrice
+            };
         }
 
 
-        public void UpdateProduct(ProductPriceDTO productToUpdate,string id)
+        public ProductPriceDTO UpdateProduct(ProductPriceDTO productToUpdate,string id)
         {
-            List<ProductPrice> allProducts = _productDB.GetAll();
-            foreach (ProductPrice product in allProducts)
+            
+            ProductPrice pprice = new ProductPrice();
+           
+            
+            if(string.IsNullOrEmpty(productToUpdate.ProductCode))
             {
-                if (product.ProductCode.Equals(id))
-                {
-                    product.ProductCode=productToUpdate.ProductCode;
-                    product.FixedPrice = productToUpdate.FixedPrice;
-                    break;
-                }
+                pprice.ProductCode=null;
             }
+            else
+            {
+                pprice.ProductCode=productToUpdate.ProductCode;
+            }
+          
+            
+            
+            pprice.FixedPrice=productToUpdate.FixedPrice;
+            
+            ProductPrice proprice = _productDB.Update(pprice,id);
+
+            return new ProductPriceDTO()
+            {
+            ProductCode =proprice.ProductCode,
+            FixedPrice=proprice.FixedPrice
+            
+            };
         }
         public void DeleteProduct(string code)
         {
-            List<ProductPrice> allProducts = _productDB.GetAll();
-            //List<ProductPriceDTO> products = new List<ProductPriceDTO>();
+           
 
-            foreach (ProductPrice product in allProducts)
-            {
-                if (product.ProductCode.Equals(code))
-                {
-                    allProducts.Remove(product);
+           _productDB.Delete(code);
 
-                    break;
-                }
-            }
         }
         public List<ProductPriceDTO> GetAll()
         {

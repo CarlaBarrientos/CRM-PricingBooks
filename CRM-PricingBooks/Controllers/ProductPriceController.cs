@@ -17,10 +17,15 @@ namespace CRM_PricingBooks.Controllers
     public class ProductPriceController : ControllerBase
     {
         private readonly IProductLogic _productLogic;
+                private readonly IConfiguration _configuration;
 
-        public ProductPriceController(IProductLogic studentLogic)
+
+
+        public ProductPriceController(IProductLogic studentLogic, IConfiguration config)
         {
             _productLogic= studentLogic;
+            _configuration = config;
+
         }
 
         [HttpGet]
@@ -33,18 +38,23 @@ namespace CRM_PricingBooks.Controllers
         }
         [HttpPost]
         [Route("products")]
-        public void Post([FromBody]ProductPriceDTO newProductDTO)
+        public ProductPriceDTO Post([FromBody]ProductPriceDTO newProductDTO)
         {
 
-            _productLogic.AddNewProduct(newProductDTO);
+            ProductPriceDTO  productoprice=_productLogic.AddNewProduct(newProductDTO);
+             var dbServer = _configuration.GetSection("Database").GetSection("ServerName");
+            productoprice.ProductCode = $"{productoprice.ProductCode} data from {dbServer.Value}";
+
+            return productoprice;
+
         }
 
         // PUT: api/Student/12345
         [HttpPut]
         [Route("products/{id}")]
-        public void Put([FromBody]ProductPriceDTO productToUpdate, string id) // id=Code:12345
+        public ProductPriceDTO Put([FromBody]ProductPriceDTO productToUpdate, string id) // id=Code:12345
         {
-            _productLogic.UpdateProduct(productToUpdate,id);
+             return _productLogic.UpdateProduct(productToUpdate,id);
         }
 
         [HttpDelete]

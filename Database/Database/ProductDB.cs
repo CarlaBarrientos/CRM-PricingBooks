@@ -19,16 +19,35 @@ namespace CRM_PricingBooks.Database
             Product = new List<ProductPrice>();
         }
 
-        public void AddNew(ProductPrice newProduct)
+        public ProductPrice AddNew(ProductPrice newProduct)
         {
             Product.Add(newProduct);
+            return newProduct;
         }
-        public void Update(ProductPrice productToUpdate,string id)
+        public ProductPrice Update(ProductPrice productToUpdate,string id)
         {
+            foreach (ProductPrice product in GetAll())
+            {
+                if (product.ProductCode.Equals(id))
+                {
+                    product.ProductCode=productToUpdate.ProductCode;
+                    product.FixedPrice = productToUpdate.FixedPrice;
+                    break;
+                }
+            }
+            return productToUpdate;
         }
         public void Delete(string code)
         {
-            
+          foreach (ProductPrice product in GetAll())
+            {
+                if (product.ProductCode.Equals(code))
+                {
+                    Product.Remove(product);
+
+                    break;
+                }
+            }   
         }
         public List<ProductPrice> GetAll()
         {

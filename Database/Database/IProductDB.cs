@@ -7,8 +7,8 @@ namespace CRM_PricingBooks.Database
 {
     public interface IProductDB
     {
-        void AddNew(ProductPrice newProduct);
-        void Update(ProductPrice productToUpdate,string id);
+        ProductPrice AddNew(ProductPrice newProduct);
+        ProductPrice Update(ProductPrice productToUpdate,string id);
         void Delete(string code);
         List<ProductPrice> GetAll();
     }
