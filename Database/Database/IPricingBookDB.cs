@@ -10,6 +10,6 @@ namespace CRM_PricingBooks.Database
     {
         public List<PricingBook> GetAll();
         public PricingBook Update(PricingBook pbToUpdate, string id);
-        public void AddNew(PricingBook newPricingBook);
+        public PricingBook AddNew(PricingBook newPricingBook);
     }
 }

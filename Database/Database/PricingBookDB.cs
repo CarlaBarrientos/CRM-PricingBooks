@@ -15,9 +15,10 @@ namespace CRM_PricingBooks.Database
             PricingBooks = new List<PricingBook>();
         }
 
-        public void AddNew(PricingBook newPricingBook)
+        public PricingBook AddNew(PricingBook newPricingBook)
         {
-
+            PricingBooks.Add(newPricingBook);
+            return newPricingBook;
         }
 
         public PricingBook Update(PricingBook pbToUpdate, string id)

@@ -152,9 +152,46 @@ namespace CRM_PricingBooks.BusinessLogic
 
         }
 
-        public void AddNewListProduct(PricingBookDTO newPricingBook) 
+        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook) 
         {
+            PricingBook pricingBook = new PricingBook();
+           //ProductPriceDTO productPrice = new ProductPriceDTO();
             
+            pricingBook.Name = newPricingBook.Name;
+            pricingBook.Description = newPricingBook.Description;
+            pricingBook.Id = SelfGenerationID();
+            pricingBook.Status = newPricingBook.Status;
+            pricingBook.ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });
+            
+            PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
+            return new PricingBookDTO()
+            {
+                Id = pricingBookInDB.Id,
+                Name = pricingBookInDB.Name,
+                Description = pricingBookInDB.Description,
+                Status = pricingBookInDB.Status,
+                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                })
+
+            };
+        }
+
+        public string SelfGenerationID()
+        {
+            PricingBook pricingBook = new PricingBook();
+
+            List<PricingBook> pricings = new List<PricingBook>();
+            pricingBook.Id = Convert.ToString(pricings.Count);
+
+            return pricingBook.Id;
+
         }
 
 

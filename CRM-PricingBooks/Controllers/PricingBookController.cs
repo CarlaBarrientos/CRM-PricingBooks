@@ -30,9 +30,22 @@ namespace CRM_PricingBooks.Controllers
 
         [HttpPost]
         [Route("pricingbooks")]
-        public void Post([FromBody]PricingBookDTO newPriceBookDTO)
+        public PricingBookDTO Post([FromBody]PricingBookDTO newPriceBookDTO)
         {
+            Console.WriteLine("from post =>" + newPriceBookDTO.Id + " " 
+                                             + newPriceBookDTO.Name + " " 
+                                             + newPriceBookDTO.Description + " " 
+                                             + newPriceBookDTO.Status + " " 
+                                             + newPriceBookDTO.ProductPrices.ConvertAll(productPriceDTO => new ProductPriceDTO
+                                             { 
+                                                 ProductCode = productPriceDTO.ProductCode,
+                                                 FixedPrice = productPriceDTO.FixedPrice,
+                                                 PromotionPrice = productPriceDTO.PromotionPrice
+                                             }));
 
+            PricingBookDTO newPriceBook = _priceLogic.AddNewListPricingBook(newPriceBookDTO);
+
+            return newPriceBook;
         }
 
         // PUT: api/Student/12345
