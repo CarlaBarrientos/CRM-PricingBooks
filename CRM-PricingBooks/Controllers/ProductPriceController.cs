@@ -25,18 +25,15 @@ namespace CRM_PricingBooks.Controllers
 
         [HttpGet]
         [Route("pricing-books/{id}/product-prices")]
-        public List<ProductPriceDTO> GetAll()
+        public IEnumerable<ProductPriceDTO> GetProducts(string id)
         {
-
-
-            return _productLogic.GetAll();
+            return _productLogic.GetProducts(id);
         }
         [HttpPost]
         [Route("pricing-books/{id}/product-prices")]
-        public void Post([FromBody]ProductPriceDTO newProductDTO)
+        public PricingBookDTO Post([FromBody]ProductPriceDTO newProductDTO, string id)
         {
-
-            _productLogic.AddNewProduct(newProductDTO);
+            return _productLogic.AddNewProduct(newProductDTO, id);
         }
 
         // PUT: api/Student/12345
