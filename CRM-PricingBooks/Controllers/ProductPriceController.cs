@@ -24,7 +24,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpGet]
-        [Route("products")]
+        [Route("pricing-books/{id}/product-prices")]
         public List<ProductPriceDTO> GetAll()
         {
 
@@ -32,7 +32,7 @@ namespace CRM_PricingBooks.Controllers
             return _productLogic.GetAll();
         }
         [HttpPost]
-        [Route("products")]
+        [Route("pricing-books/{id}/product-prices")]
         public void Post([FromBody]ProductPriceDTO newProductDTO)
         {
 
@@ -41,14 +41,14 @@ namespace CRM_PricingBooks.Controllers
 
         // PUT: api/Student/12345
         [HttpPut]
-        [Route("products/{id}")]
+        [Route("pricing-books/{id}/product-prices")]
         public void Put([FromBody]ProductPriceDTO productToUpdate, string id) // id=Code:12345
         {
             _productLogic.UpdateProduct(productToUpdate,id);
         }
 
         [HttpDelete]
-        [Route("products/{id}")]
+        [Route("pricing-books/{id}/product-prices")]
         public void Delete(string id) // CI:65008816
         {
             _productLogic.DeleteProduct(id);

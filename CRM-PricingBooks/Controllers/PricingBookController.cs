@@ -22,42 +22,30 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpGet]
-        [Route("pricingbooks")]
+        [Route("pricing-books")]
         public IEnumerable<PricingBookDTO> GetAll()
         {
             return _priceLogic.GetPricingBooks();
         }
 
         [HttpPost]
-        [Route("pricingbooks")]
+        [Route("pricing-books")]
         public PricingBookDTO Post([FromBody]PricingBookDTO newPriceBookDTO)
         {
-            Console.WriteLine("from post =>" + newPriceBookDTO.Id + " " 
-                                             + newPriceBookDTO.Name + " " 
-                                             + newPriceBookDTO.Description + " " 
-                                             + newPriceBookDTO.Status + " " 
-                                             + newPriceBookDTO.ProductPrices.ConvertAll(productPriceDTO => new ProductPriceDTO
-                                             { 
-                                                 ProductCode = productPriceDTO.ProductCode,
-                                                 FixedPrice = productPriceDTO.FixedPrice,
-                                                 PromotionPrice = productPriceDTO.PromotionPrice
-                                             }));
-
             PricingBookDTO newPriceBook = _priceLogic.AddNewListPricingBook(newPriceBookDTO);
-
             return newPriceBook;
         }
 
         // PUT: api/Student/12345
         [HttpPut]
-        [Route("pricingbooks/{id}")]
+        [Route("pricing-books/{id}")]
         public PricingBookDTO Put([FromBody]PricingBookDTO pricingBookToUpdate, string id) // id=Code:12345
         {
             return _priceLogic.UpdateListProduct(pricingBookToUpdate, id);
         }
 
         [HttpDelete]
-        [Route("pricingbooks/{id}")]
+        [Route("pricing-books/{id}")]
         public void Delete(int id) // CI:65008816
         {
             _priceLogic.DeleteListProduct(id);
