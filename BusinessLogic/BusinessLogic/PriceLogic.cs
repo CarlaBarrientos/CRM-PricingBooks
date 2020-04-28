@@ -12,6 +12,7 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public class PriceLogic : IPriceLogic
     {
+        private int count = 0;
         private readonly IPricingBookDB _productTableDB;
 
         public PriceLogic(IPricingBookDB productTableDB)
@@ -152,9 +153,58 @@ namespace CRM_PricingBooks.BusinessLogic
 
         }
 
-        public void AddNewListProduct(PricingBookDTO newPricingBook) 
+        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook) 
         {
+            PricingBook pricingBook = new PricingBook();
+           //ProductPriceDTO productPrice = new ProductPriceDTO();
             
+            pricingBook.Name = newPricingBook.Name;
+            pricingBook.Description = newPricingBook.Description;
+            pricingBook.Id = SelfGenerationID();
+            pricingBook.Status = false;
+            pricingBook.ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });
+            
+            PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
+            return new PricingBookDTO()
+            {
+                Id = pricingBookInDB.Id,
+                Name = pricingBookInDB.Name,
+                Description = pricingBookInDB.Description,
+                Status = pricingBookInDB.Status,
+                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                })
+
+            };
+        }
+
+        public string SelfGenerationID()
+        {
+            count = count + 1;
+            string aux = "";
+            if(count < 10)
+                {
+                aux = "PricingBook-00" +Convert.ToString(count);
+                }
+            else 
+            {if(count >= 10 && count < 100)
+                {
+                aux = "PricingBook-0" +Convert.ToString(count);
+                }
+            else 
+            {
+                aux = "PricingBook-" +Convert.ToString(count);
+            }
+
+            }
+            return aux;
+
         }
 
 
