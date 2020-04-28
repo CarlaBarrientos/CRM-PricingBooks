@@ -14,5 +14,6 @@ namespace CRM_PricingBooks.Database
 
         PricingBook AddNewProduct(ProductPrice newProduct, string id);
         List<ProductPrice> GetProducts(string id);
+        public void Delete(string code);
     }
 }
