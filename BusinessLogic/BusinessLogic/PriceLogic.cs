@@ -12,6 +12,7 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public class PriceLogic : IPriceLogic
     {
+        private int count = 0;
         private readonly IPricingBookDB _productTableDB;
 
         public PriceLogic(IPricingBookDB productTableDB)
@@ -160,7 +161,7 @@ namespace CRM_PricingBooks.BusinessLogic
             pricingBook.Name = newPricingBook.Name;
             pricingBook.Description = newPricingBook.Description;
             pricingBook.Id = SelfGenerationID();
-            pricingBook.Status = newPricingBook.Status;
+            pricingBook.Status = false;
             pricingBook.ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
                     {
                         ProductCode = product.ProductCode,
@@ -185,12 +186,24 @@ namespace CRM_PricingBooks.BusinessLogic
 
         public string SelfGenerationID()
         {
-            PricingBook pricingBook = new PricingBook();
+            count = count + 1;
+            string aux = "";
+            if(count < 10)
+                {
+                aux = "PricingBook-00" +Convert.ToString(count);
+                }
+            else 
+            {if(count >= 10 && count < 100)
+                {
+                aux = "PricingBook-0" +Convert.ToString(count);
+                }
+            else 
+            {
+                aux = "PricingBook-" +Convert.ToString(count);
+            }
 
-            List<PricingBook> pricings = new List<PricingBook>();
-            pricingBook.Id = Convert.ToString(pricings.Count);
-
-            return pricingBook.Id;
+            }
+            return aux;
 
         }
 
