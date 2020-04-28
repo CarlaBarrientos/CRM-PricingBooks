@@ -7,11 +7,12 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public interface IProductLogic
     {
+        List<ProductPriceDTO> GetProducts(string id);
+        PricingBookDTO AddNewProduct(ProductPriceDTO newProduct, string id);
 
-            void AddNewProduct(ProductPriceDTO newProduct);
-            void UpdateProduct(ProductPriceDTO productToUpdate,string id);
-            void DeleteProduct(string code);
-            List<ProductPriceDTO> GetAll();
+        
+        void UpdateProduct(ProductPriceDTO productToUpdate,string id);
+        void DeleteProduct(string code);
 
     }
 }

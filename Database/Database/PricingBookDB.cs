@@ -15,6 +15,8 @@ namespace CRM_PricingBooks.Database
             PricingBooks = new List<PricingBook>();
         }
 
+        //***************************CRUD PRICINGBOOKS*************************
+
         public PricingBook AddNew(PricingBook newPricingBook)
         {
             PricingBooks.Add(newPricingBook);
@@ -66,6 +68,33 @@ namespace CRM_PricingBooks.Database
             return PricingBooks;
         }
 
+        //***************************CRUD PRODUCTS*************************
+        public PricingBook AddNewProduct(ProductPrice newProduct, string id)
+        {
+            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            if(pb != null)
+            {
+                pb.ProductsList.Add(newProduct); 
+            }
+
+            return pb;
+        }
+
+        public List<ProductPrice> GetProducts(string id)
+        {
+            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            List<ProductPrice> productos = new List<ProductPrice>();
+            if(pb != null)
+            {
+                foreach (ProductPrice pp in pb.ProductsList)
+                {
+                    productos.Add(pp);
+                    
+                } 
+            }   
+
+            return productos;
+        }
     }
     
 }

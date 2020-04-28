@@ -116,7 +116,8 @@ namespace CRM_PricingBooks.BusinessLogic
                 ProductPrices = pbInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
                     ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice
+                    FixedPrice = product.FixedPrice,
+                    PromotionPrice = product.FixedPrice
                 })
 
             };
@@ -148,7 +149,8 @@ namespace CRM_PricingBooks.BusinessLogic
                 ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
                     ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice
+                    FixedPrice = product.FixedPrice,
+                    PromotionPrice = product.FixedPrice
                 })
 
             };

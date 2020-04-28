@@ -11,30 +11,68 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public class ProductLogic:IProductLogic
     {
-        private readonly IProductDB _productDB;
+        /*private readonly IProductDB _productDB;
 
         public ProductLogic(IProductDB productDB)
         {
             _productDB = productDB;
-        }
-        public void AddNewProduct(ProductPriceDTO newProduct)
+        }*/
+
+        private readonly IPricingBookDB _productTableDB;
+
+        public ProductLogic(IPricingBookDB productTableDB)
         {
+            _productTableDB = productTableDB;
+        }
 
-            // Mappers
-            ProductPrice productprice = new ProductPrice();
-            productprice.ProductCode = Convert.ToString(new Random().Next(1,100));
-            productprice.FixedPrice = newProduct.FixedPrice;
+        public PricingBookDTO AddNewProduct(ProductPriceDTO newProduct, string id)
+        {
+            ProductPrice newProductPrice = new ProductPrice();
+            newProductPrice.ProductCode = newProduct.ProductCode;
+            newProductPrice.FixedPrice = newProduct.FixedPrice;
+            PricingBook pricingBookInDB = _productTableDB.AddNewProduct(newProductPrice, id);
 
-            // Logic calculation
+            return new PricingBookDTO()
+            {
+                Id = pricingBookInDB.Id,
+                Name = pricingBookInDB.Name,
+                Description = pricingBookInDB.Description,
+                Status = pricingBookInDB.Status,
+                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice,
+                    PromotionPrice = product.FixedPrice
+                })
 
-            // Add to DB
-            _productDB.AddNew(productprice);
+            };
+        }
+
+        public List<ProductPriceDTO> GetProducts(string id)
+        {
+            List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
+            List<ProductPriceDTO> products = new List<ProductPriceDTO>();
+
+            foreach (ProductPrice pp in allProducts)
+            {
+                products.Add(
+                    new ProductPriceDTO()
+                    {
+                        ProductCode = pp.ProductCode,
+                        FixedPrice = pp.FixedPrice,
+                        PromotionPrice = pp.FixedPrice
+                    }
+                    
+                );
+            }
+           
+            return products;
         }
 
 
         public void UpdateProduct(ProductPriceDTO productToUpdate,string id)
         {
-            List<ProductPrice> allProducts = _productDB.GetAll();
+            /*List<ProductPrice> allProducts = _productDB.GetAll();
             foreach (ProductPrice product in allProducts)
             {
                 if (product.ProductCode.Equals(id))
@@ -43,11 +81,11 @@ namespace CRM_PricingBooks.BusinessLogic
                     product.FixedPrice = productToUpdate.FixedPrice;
                     break;
                 }
-            }
+            }*/
         }
         public void DeleteProduct(string code)
         {
-            List<ProductPrice> allProducts = _productDB.GetAll();
+            /*List<ProductPrice> allProducts = _productDB.GetAll();
             //List<ProductPriceDTO> products = new List<ProductPriceDTO>();
 
             foreach (ProductPrice product in allProducts)
@@ -58,30 +96,9 @@ namespace CRM_PricingBooks.BusinessLogic
 
                     break;
                 }
-            }
+            }*/
         }
-        public List<ProductPriceDTO> GetAll()
-        {
-            List<ProductPrice> allProducts = _productDB.GetAll();
-            List<ProductPriceDTO> products= new List<ProductPriceDTO>();
-
-            // Mappers
-            foreach (ProductPrice product in allProducts)
-            {
-                products.Add(
-                    new ProductPriceDTO()
-                    {
-                        ProductCode = product.ProductCode,
-                        FixedPrice=product.FixedPrice,
-                        PromotionPrice = calculatediscount("XMAS", product.FixedPrice)
-
-                    }
-                );
-
-            }
-
-            return products;
-        }
+        
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
         {
 

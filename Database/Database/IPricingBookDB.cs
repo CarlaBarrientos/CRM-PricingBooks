@@ -8,8 +8,11 @@ namespace CRM_PricingBooks.Database
 {
     public interface IPricingBookDB
     {
-        public List<PricingBook> GetAll();
-        public PricingBook Update(PricingBook pbToUpdate, string id);
-        public PricingBook AddNew(PricingBook newPricingBook);
+        List<PricingBook> GetAll();
+        PricingBook Update(PricingBook pbToUpdate, string id);
+        PricingBook AddNew(PricingBook newPricingBook);
+
+        PricingBook AddNewProduct(ProductPrice newProduct, string id);
+        List<ProductPrice> GetProducts(string id);
     }
 }
