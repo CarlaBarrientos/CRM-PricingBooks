@@ -88,39 +88,15 @@ namespace CRM_PricingBooks.BusinessLogic
             }
 
         }
-        //NO FUNCIONA-----------------------------------
+        
         public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
         {
             PricingBook pbUpdated = new PricingBook();
 
-            if(string.IsNullOrEmpty(pricingBookToUpdate.Id))
-            {
-                pbUpdated.Id = null;
-            }else
-            {
-                pbUpdated.Id = pricingBookToUpdate.Id;
-            }
-            if(string.IsNullOrEmpty(pricingBookToUpdate.Name))
-            {
-                pbUpdated.Name = null;
-            }else
-            {
-                pbUpdated.Name = pricingBookToUpdate.Name;
-            }
-            if(string.IsNullOrEmpty(pricingBookToUpdate.Description))
-            {
-                pbUpdated.Description = null;
-            }else
-            {
-                pbUpdated.Description = pricingBookToUpdate.Description;
-            }
-            /*if(pricingBookToUpdate.ProductPrices == null)
-            {
-                pbUpdated.ProductsList = null;
-                
-            }else
-            {*/
-                if(pricingBookToUpdate.ProductPrices.Count() != 0)
+            pbUpdated.Id = pricingBookToUpdate.Id;
+            pbUpdated.Name = pricingBookToUpdate.Name;
+            pbUpdated.Description = pricingBookToUpdate.Description;
+            if(pricingBookToUpdate.ProductPrices.Count() != 0)
                 {
                     pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
                     {
@@ -128,14 +104,8 @@ namespace CRM_PricingBooks.BusinessLogic
                         FixedPrice = product.FixedPrice
                     });
                 }
-            //}
             
-            Console.WriteLine("estamos en logic");
-
             PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
-
-            Console.WriteLine("despues de db");
-
 
             return new PricingBookDTO()
             {
@@ -184,27 +154,21 @@ namespace CRM_PricingBooks.BusinessLogic
             };
         }
 
-        public string SelfGenerationID()
+        private string SelfGenerationID()
         {
             count = count + 1;
-            string aux = "";
             if(count < 10)
-                {
-                aux = "PricingBook-00" +Convert.ToString(count);
-                }
-            else 
-            {if(count >= 10 && count < 100)
-                {
-                aux = "PricingBook-0" +Convert.ToString(count);
-                }
+            {
+                return ("PricingBook-00" + Convert.ToString(count));
+            }
+            if(count >= 10 && count < 100)
+            {
+                return ("PricingBook-0" + Convert.ToString(count));
+            }
             else 
             {
-                aux = "PricingBook-" +Convert.ToString(count);
+                return ("PricingBook-" +Convert.ToString(count));
             }
-
-            }
-            return aux;
-
         }
 
 

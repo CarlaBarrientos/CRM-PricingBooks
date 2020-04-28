@@ -23,69 +23,39 @@ namespace CRM_PricingBooks.Database
 
         public PricingBook Update(PricingBook pbToUpdate, string id)
         {
-            Console.WriteLine("estamos en db");
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
             if (pb != null) 
             {
-                Console.WriteLine("estamos en db2");
-                if(pb.Id.Equals(id))
-                {
-                    if(string.IsNullOrEmpty(pbToUpdate.Id))
-                    {
-                        Console.WriteLine("estamos en id");
-                        pbToUpdate.Id = id;
-                    }else
-                    {
-                        pb.Id = pbToUpdate.Id;
-                    }
-                    if(string.IsNullOrEmpty(pbToUpdate.Name))
-                    {
-                        Console.WriteLine("estamos en name");
-                        pbToUpdate.Name = pb.Name;
-                    }else
-                    {
-                        pb.Name = pbToUpdate.Name;
-                    }
-                    if(string.IsNullOrEmpty(pbToUpdate.Description))
-                    {
-                        Console.WriteLine("estamos en description   ");
-                        pbToUpdate.Description = pb.Description;
-                    }else
-                    {
-                        pb.Description = pbToUpdate.Description;
-                    }
-                    /*if(pbToUpdate.ProductsList == null)
-                    {
-                        pbToUpdate.ProductsList = pb.ProductsList.ConvertAll(product => new ProductPrice
-                        {
-                            ProductCode = product.ProductCode,
-                            FixedPrice = product.FixedPrice
-                        });  
-                        
-                    }else
-                    {*/
-                        if(pbToUpdate.ProductsList.Count() != 0)
-                        {
-                            Console.WriteLine("estamos en lista productos");
-                        
-                            foreach(ProductPrice product in pbToUpdate.ProductsList)
-                            {
-                                pb.ProductsList.Add(new ProductPrice
-                                {
-                                    ProductCode = product.ProductCode,
-                                    FixedPrice = product.FixedPrice
-                                });
-                            }
 
-                            pbToUpdate.ProductsList = pb.ProductsList.ConvertAll(product => new ProductPrice
-                            {
-                                ProductCode = product.ProductCode,
-                                FixedPrice = product.FixedPrice
-                            });                          
-                        }
-                    //}
-                    
-                    pbToUpdate.Status = pb.Status;
+                //if(string.IsNullOrEmpty(pbToUpdate.Id))
+                //{
+                    pbToUpdate.Id = id;
+                /*}else
+                {
+                    pb.Id = pbToUpdate.Id;
+                }*/
+                if(string.IsNullOrEmpty(pbToUpdate.Name))
+                {
+                    pbToUpdate.Name = pb.Name;
+                }else
+                {
+                    pb.Name = pbToUpdate.Name;
+                }
+                if(string.IsNullOrEmpty(pbToUpdate.Description))
+                {
+                    pbToUpdate.Description = pb.Description;
+                }else
+                {
+                    pb.Description = pbToUpdate.Description;
+                }
+                pbToUpdate.Status = pb.Status;
+                if(pbToUpdate.ProductsList.Count() != 0)
+                {                
+                    pb.ProductsList = pbToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });                          
                 }
             }
             return pbToUpdate;
