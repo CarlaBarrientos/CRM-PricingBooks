@@ -84,20 +84,24 @@ namespace CRM_PricingBooks.BusinessLogic
             _productTableDB.UpdateProduct(productPriceupdated , id);
 
         }
-        public void DeleteProduct(string code)
-        {
-            /*List<ProductPrice> allProducts = _productDB.GetAll();
-            //List<ProductPriceDTO> products = new List<ProductPriceDTO>();
+       //ELIMINAR PRODUCTOS DE LISTA 
+         public string DeleteProduct(string code)
+         {
+           string aux = "";
+           List<ProductPriceDTO> priceslist = GetProducts(code);
 
-            foreach (ProductPrice product in allProducts)
+
+
+            foreach (ProductPriceDTO pp in priceslist)
             {
-                if (product.ProductCode.Equals(code))
-                {
-                    allProducts.Remove(product);
-
-                    break;
-                }
-            }*/
+                priceslist.Remove(pp);
+                _productTableDB.DeleteProduct(code);  
+                 aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
+                return aux;
+            }
+            aux = "PRICE LIST DOES NOT EXIST ";
+       
+            return aux;
         }
 
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
