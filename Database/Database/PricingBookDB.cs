@@ -97,6 +97,19 @@ namespace CRM_PricingBooks.Database
             }
         }
 
+        public void DeActivate(string id)
+        {
+
+            foreach (PricingBook pb in GetAll())
+            {
+                if (pb.Id.Equals(id))
+                {
+                    pb.Status = false;
+                    break;
+                }
+            }
+        }
+
         public List<PricingBook> GetAll()
         {
             return PricingBooks;

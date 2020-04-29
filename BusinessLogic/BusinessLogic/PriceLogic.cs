@@ -201,6 +201,34 @@ namespace CRM_PricingBooks.BusinessLogic
             }
         }
 
+        public string DeActivateList(string id)
+        {
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+            List<PricingBookDTO> filteredList = priceslist.Where(x => (x.Status == true)).ToList();
+
+            string aux = "";
+
+            if (filteredList.Count == 0)
+            {
+                aux = "THERES NO ACTIVATED LIST AT THE MOMENT " + filteredList;
+                return aux;
+            }
+            else
+            {
+                foreach (PricingBookDTO pbDTO in priceslist)
+                {
+                    if (pbDTO.Id.Equals(id))
+                    {
+                        pbDTO.Status = false;
+                        aux = "DEACTIVATING LIST WITH ID " + id;
+                        _productTableDB.DeActivate(id);
+                        return aux;
+                    }
+                }
+                return aux;
+            }
+        }
+
 
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
         {
