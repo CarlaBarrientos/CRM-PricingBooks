@@ -210,7 +210,7 @@ namespace CRM_PricingBooks.BusinessLogic
 
             if (filteredList.Count == 0)
             {
-                aux = "THERES NO ACTIVATED LIST AT THE MOMENT " + filteredList;
+                aux = "THERES NO ACTIVATED LIST AT THE MOMENT " + id;
                 return aux;
             }
             else

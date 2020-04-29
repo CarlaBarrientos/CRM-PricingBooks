@@ -52,7 +52,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpPost]
-        [Route("pricing-books/{id}")]
+        [Route("pricing-books/{id}/activate")]
         public string ActivatePost(string id)
         {
             string active = _priceLogic.ActivateList(id);
@@ -60,7 +60,7 @@ namespace CRM_PricingBooks.Controllers
         }
 
         [HttpPost]
-        [Route("pricing-books/{id}")]
+        [Route("pricing-books/{id}/deactivate")]
         public string DeActivatePost(string id)
         {
             string active = _priceLogic.DeActivateList(id);
