@@ -26,7 +26,7 @@ namespace CRM_PricingBooks.Database
         public PricingBook Update(PricingBook pbToUpdate, string id)
         {
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
-            if (pb != null) 
+            if (pb != null)
             {
 
                 //if(string.IsNullOrEmpty(pbToUpdate.Id))
@@ -52,12 +52,12 @@ namespace CRM_PricingBooks.Database
                 }
                 pbToUpdate.Status = pb.Status;
                 if(pbToUpdate.ProductsList.Count() != 0)
-                {                
+                {
                     pb.ProductsList = pbToUpdate.ProductsList.ConvertAll(product => new ProductPrice
                     {
                         ProductCode = product.ProductCode,
                         FixedPrice = product.FixedPrice
-                    });                          
+                    });
                 }
             }
             return pbToUpdate;
@@ -91,7 +91,7 @@ namespace CRM_PricingBooks.Database
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
             if(pb != null)
             {
-                pb.ProductsList.Add(newProduct); 
+                pb.ProductsList.Add(newProduct);
             }
 
             return pb;
@@ -107,12 +107,24 @@ namespace CRM_PricingBooks.Database
                 foreach (ProductPrice pp in pb.ProductsList)
                 {
                     productos.Add(pp);
-                    
-                } 
-            }   
+
+                }
+            }
 
             return productos;
         }
+        public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
+        {
+
+            PricingBook pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            if (pb != null)
+            {
+                pb.ProductsList = ppToUpdate;
+  
+            }
+
+            return pb;
+        }
     }
-    
+
 }

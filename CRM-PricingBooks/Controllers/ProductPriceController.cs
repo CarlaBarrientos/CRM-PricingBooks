@@ -39,7 +39,7 @@ namespace CRM_PricingBooks.Controllers
         // PUT: api/Student/12345
         [HttpPut]
         [Route("pricing-books/{id}/product-prices")]
-        public void Put([FromBody]ProductPriceDTO productToUpdate, string id) // id=Code:12345
+        public void Put([FromBody]List<ProductPriceDTO> productToUpdate, string id) // id=Code:12345
         {
             _productLogic.UpdateProduct(productToUpdate,id);
         }

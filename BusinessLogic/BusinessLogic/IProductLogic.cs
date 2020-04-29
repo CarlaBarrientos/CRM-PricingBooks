@@ -10,8 +10,8 @@ namespace CRM_PricingBooks.BusinessLogic
         List<ProductPriceDTO> GetProducts(string id);
         PricingBookDTO AddNewProduct(ProductPriceDTO newProduct, string id);
 
-        
-        void UpdateProduct(ProductPriceDTO productToUpdate,string id);
+
+        void UpdateProduct(List <ProductPriceDTO> productToUpdate,string id);
         void DeleteProduct(string code);
 
     }

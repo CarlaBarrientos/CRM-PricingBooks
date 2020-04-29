@@ -62,26 +62,27 @@ namespace CRM_PricingBooks.BusinessLogic
                         FixedPrice = pp.FixedPrice,
                         PromotionPrice = pp.FixedPrice
                     }
-                    
+
                 );
             }
-           
+
             return products;
         }
 
 
-        public void UpdateProduct(ProductPriceDTO productToUpdate,string id)
+        public void UpdateProduct(List <ProductPriceDTO> productToUpdate,string id)
         {
-            /*List<ProductPrice> allProducts = _productDB.GetAll();
-            foreach (ProductPrice product in allProducts)
-            {
-                if (product.ProductCode.Equals(id))
-                {
-                    product.ProductCode=productToUpdate.ProductCode;
-                    product.FixedPrice = productToUpdate.FixedPrice;
-                    break;
-                }
-            }*/
+
+            List<ProductPrice> productPriceupdated = new List<ProductPrice>();
+            foreach(ProductPriceDTO product in productToUpdate){
+                ProductPrice newproduct = new ProductPrice();
+                newproduct.ProductCode = product.ProductCode;
+                newproduct.FixedPrice = product.FixedPrice;
+                productPriceupdated.Add(newproduct);
+            }
+
+            _productTableDB.UpdateProduct(productPriceupdated , id);
+
         }
         public void DeleteProduct(string code)
         {
@@ -98,7 +99,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
             }*/
         }
-        
+
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
         {
 
