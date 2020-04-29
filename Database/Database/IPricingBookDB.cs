@@ -15,6 +15,7 @@ namespace CRM_PricingBooks.Database
         PricingBook AddNewProduct(ProductPrice newProduct, string id);
         List<ProductPrice> GetProducts(string id);
         public void Activate(string id);
+        void DeActivate(string id);
         PricingBook UpdateProduct(List<ProductPrice> ppToUpdate, string id);
         public void Delete(string code);
 
