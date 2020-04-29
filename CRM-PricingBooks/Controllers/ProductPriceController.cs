@@ -46,9 +46,9 @@ namespace CRM_PricingBooks.Controllers
 
         [HttpDelete]
         [Route("pricing-books/{id}/product-prices")]
-        public void Delete(string id) // CI:65008816
+        public string Delete(string id) // CI:65008816
         {
-            _productLogic.DeleteProduct(id);
+            return _productLogic.DeleteProduct(id);
 
         }
     }
