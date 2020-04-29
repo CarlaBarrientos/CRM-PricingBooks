@@ -11,14 +11,14 @@ namespace CRM_PricingBooks.Database
         List<PricingBook> GetAll();
         PricingBook Update(PricingBook pbToUpdate, string id);
         PricingBook AddNew(PricingBook newPricingBook);
-
-        PricingBook AddNewProduct(ProductPrice newProduct, string id);
-        List<ProductPrice> GetProducts(string id);
-        public void Activate(string id);
+        void Delete(string code);
+        void Activate(string id);
         void DeActivate(string id);
+
+        PricingBook AddNewProduct(List<ProductPrice> newProduct, string id);
+        List<ProductPrice> GetProducts(string id);
         PricingBook UpdateProduct(List<ProductPrice> ppToUpdate, string id);
-        public void Delete(string code);
-        public void DeleteProduct(string code);
+        void DeleteProduct(string code);
 
 
     }
