@@ -57,7 +57,7 @@ namespace CRM_PricingBooks.BusinessLogic
             return pricesLists;
 
         }
-        //FUNCIONA-------------------------------------------
+        
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
         {           
             pricesLists.Add(new PricingBookDTO()
@@ -74,7 +74,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 })
             });
         }
-        //FUNCIONA :D----------------------------------------
+        
         public bool DeleteListProduct(string id)
         {
             List<PricingBookDTO> priceslist = GetPricingBooks();
@@ -90,6 +90,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             return false;
         }
+        
         public string ActivateList(string id)
         {
             List<PricingBookDTO> priceslist = GetPricingBooks();
@@ -121,7 +122,7 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             PricingBook pbUpdated = new PricingBook();
 
-            pbUpdated.Id = pricingBookToUpdate.Id;
+            //pbUpdated.Id = pricingBookToUpdate.Id;
             pbUpdated.Name = pricingBookToUpdate.Name;
             pbUpdated.Description = pricingBookToUpdate.Description;
             if(pricingBookToUpdate.ProductPrices.Count() != 0)
@@ -184,38 +185,13 @@ namespace CRM_PricingBooks.BusinessLogic
             };
         }
 
-        private string SelfGenerationID()
-        {
-            count = count + 1;
-            if(count < 10)
-            {
-                return ("PricingBook-00" + Convert.ToString(count));
-            }
-            if(count >= 10 && count < 100)
-            {
-                return ("PricingBook-0" + Convert.ToString(count));
-            }
-            else 
-            {
-                return ("PricingBook-" +Convert.ToString(count));
-            }
-        }
-
         public string DeActivateList(string id)
         {
             List<PricingBookDTO> priceslist = GetPricingBooks();
-            List<PricingBookDTO> filteredList = priceslist.Where(x => (x.Status == true)).ToList();
 
             string aux = "";
 
-            if (filteredList.Count == 0)
-            {
-                aux = "THERES NO ACTIVATED LIST AT THE MOMENT " + id;
-                return aux;
-            }
-            else
-            {
-                foreach (PricingBookDTO pbDTO in priceslist)
+            foreach (PricingBookDTO pbDTO in priceslist)
                 {
                     if (pbDTO.Id.Equals(id))
                     {
@@ -226,9 +202,24 @@ namespace CRM_PricingBooks.BusinessLogic
                     }
                 }
                 return aux;
-            }
         }
 
+        private string SelfGenerationID()
+        {
+            List<PricingBook> allProducts = _productTableDB.GetAll();
+            
+            if(allProducts.Count == 0)
+            {
+                count = 1;
+            }
+            else
+            {
+                string[] division = allProducts[allProducts.Count - 1].Id.Split('-');
+                count = Int32.Parse(division[1]) + 1;                
+            }
+
+            return "PricingBook-"+count.ToString();
+        }
 
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
         {

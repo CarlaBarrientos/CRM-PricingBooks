@@ -31,17 +31,16 @@ namespace CRM_PricingBooks.Controllers
         }
         [HttpPost]
         [Route("pricing-books/{id}/product-prices")]
-        public PricingBookDTO Post([FromBody]ProductPriceDTO newProductDTO, string id)
+        public PricingBookDTO Post([FromBody]List<ProductPriceDTO> newProductDTO, string id)
         {
             return _productLogic.AddNewProduct(newProductDTO, id);
         }
 
-        // PUT: api/Student/12345
         [HttpPut]
         [Route("pricing-books/{id}/product-prices")]
-        public void Put([FromBody]List<ProductPriceDTO> productToUpdate, string id) // id=Code:12345
+        public PricingBookDTO Put([FromBody]List<ProductPriceDTO> productToUpdate, string id)
         {
-            _productLogic.UpdateProduct(productToUpdate,id);
+            return _productLogic.UpdateProduct(productToUpdate,id);
         }
 
         [HttpDelete]

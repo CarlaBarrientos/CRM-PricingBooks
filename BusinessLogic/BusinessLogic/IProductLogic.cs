@@ -8,10 +8,8 @@ namespace CRM_PricingBooks.BusinessLogic
     public interface IProductLogic
     {
         List<ProductPriceDTO> GetProducts(string id);
-        PricingBookDTO AddNewProduct(ProductPriceDTO newProduct, string id);
-
-
-        void UpdateProduct(List <ProductPriceDTO> productToUpdate,string id);
+        PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id);
+        PricingBookDTO UpdateProduct(List <ProductPriceDTO> productToUpdate,string id);
         string DeleteProduct(string code);
 
     }

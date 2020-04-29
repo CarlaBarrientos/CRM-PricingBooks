@@ -35,7 +35,6 @@ namespace CRM_PricingBooks
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {   
             services.AddControllers();
@@ -44,7 +43,6 @@ namespace CRM_PricingBooks
             services.AddSingleton<IPricingBookDB, PricingBookDB>();
 
             services.AddTransient<IProductLogic, ProductLogic>();
-            services.AddSingleton<IProductDB, ProductDB>();
 
             var swaggerTitle = Configuration
                 .GetSection(SWAGGER_SECTION_SETTING_KEY)

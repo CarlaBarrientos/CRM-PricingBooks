@@ -116,20 +116,22 @@ namespace CRM_PricingBooks.Database
         }
 
         //***************************CRUD PRODUCTS*************************
-        public PricingBook AddNewProduct(ProductPrice newProduct, string id)
+        public PricingBook AddNewProduct(List<ProductPrice> newProduct, string id)
         {
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
             if(pb != null)
             {
-                pb.ProductsList.Add(newProduct);
+                foreach(ProductPrice pp in newProduct)
+                {
+                    pb.ProductsList.Add(pp);
+                }
             }
 
             return pb;
         }
         
-          public void DeleteProduct(string code)
-          {
-          
+        public void DeleteProduct(string code)
+        {          
            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
             if(pb != null)
             {
