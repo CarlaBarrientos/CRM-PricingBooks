@@ -52,7 +52,6 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
             List<ProductPriceDTO> products = new List<ProductPriceDTO>();
-
             foreach (ProductPrice pp in allProducts)
             {
                 products.Add(
@@ -61,6 +60,7 @@ namespace CRM_PricingBooks.BusinessLogic
                         ProductCode = pp.ProductCode,
                         FixedPrice = pp.FixedPrice,
                         PromotionPrice = pp.FixedPrice
+
                     }
 
                 );
@@ -104,18 +104,39 @@ namespace CRM_PricingBooks.BusinessLogic
          {
            string aux = "";
            List<ProductPriceDTO> priceslist = GetProducts(code);
-           //aumentar un if
 
             foreach (ProductPriceDTO pp in priceslist)
             {
                 priceslist.Remove(pp);
-                _productTableDB.DeleteProduct(code);  
+                _productTableDB.Delete(code);
                  aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
                 return aux;
             }
             aux = "PRICE LIST DOES NOT EXIST ";
        
             return aux;
+        }
+        public string DeleteProductbyId(string code, string productcode){
+        
+         string aux = "";
+           List<ProductPriceDTO> priceslist = GetProducts(code);
+           //aumentar un if
+
+            foreach (ProductPriceDTO pp in priceslist)
+            {
+                 if(pp.ProductCode.Equals(productcode))
+                  {
+                    priceslist.Remove(pp);
+                    _productTableDB.DeleteProductCode(code,productcode);
+                     aux = "PRICE LIST AND PRODUCTCODE EXIST, WILL BE REMOVED";
+                    return aux;
+                 }
+               
+            }
+            aux = "PRICE LIST AND PRODUCTCODE DO NOT EXIST ";
+       
+            return aux;
+        
         }
     }
 }

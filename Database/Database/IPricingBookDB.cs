@@ -19,6 +19,7 @@ namespace CRM_PricingBooks.Database
         List<ProductPrice> GetProducts(string id);
         PricingBook UpdateProduct(List<ProductPrice> ppToUpdate, string id);
         void DeleteProduct(string code);
+        void DeleteProductCode(string code,string productcode);
 
 
     }

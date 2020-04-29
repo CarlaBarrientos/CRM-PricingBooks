@@ -141,9 +141,23 @@ namespace CRM_PricingBooks.Database
                     
                 } 
             }
-         
-
         }
+        public void DeleteProductCode(string code,string productcode)
+        {          
+           var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
+            if(pb != null)
+            {
+                foreach (ProductPrice pp in GetProducts(code))
+                {
+                    if(pp.ProductCode.Equals(productcode)){
+                       pb.ProductsList.Remove(pp);
+
+                    }
+                    
+                } 
+            }
+        }
+
         public List<ProductPrice> GetProducts(string id)
         {
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));

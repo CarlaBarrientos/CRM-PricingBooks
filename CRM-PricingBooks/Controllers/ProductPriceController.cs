@@ -50,5 +50,12 @@ namespace CRM_PricingBooks.Controllers
             return _productLogic.DeleteProduct(id);
 
         }
+         [HttpDelete]
+        [Route("pricing-books/{id}/product-prices/{code}")]
+        public string Delete(string id,string code) // CI:65008816
+        {
+            return _productLogic.DeleteProductbyId(id,code);
+
+        }
     }
 }
