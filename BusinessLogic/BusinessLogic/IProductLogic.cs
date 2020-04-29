@@ -12,7 +12,7 @@ namespace CRM_PricingBooks.BusinessLogic
 
 
         void UpdateProduct(List <ProductPriceDTO> productToUpdate,string id);
-        void DeleteProduct(string code);
+        string DeleteProduct(string code);
 
     }
 }

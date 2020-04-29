@@ -114,7 +114,21 @@ namespace CRM_PricingBooks.Database
             return pb;
         }
         
+          public void DeleteProduct(string code)
+          {
+          
+           var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
+            if(pb != null)
+            {
+                foreach (ProductPrice pp in GetProducts(code))
+                {
+                    pb.ProductsList.Remove(pp);
+                    
+                } 
+            }
+         
 
+        }
         public List<ProductPrice> GetProducts(string id)
         {
             var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
