@@ -62,6 +62,23 @@ namespace CRM_PricingBooks.Database
             }
             return pbToUpdate;
         }
+        public void Delete(string id)
+        {
+            int count = 0;
+
+            foreach(PricingBook pb in GetAll())
+            {
+                if (pb.Id.Equals(id))
+                {
+                    GetAll().RemoveAt(count);
+                    break;
+                }
+                else
+                {
+                    count += 1;
+                }
+            }
+        }
 
         public List<PricingBook> GetAll()
         {
@@ -79,6 +96,7 @@ namespace CRM_PricingBooks.Database
 
             return pb;
         }
+        
 
         public List<ProductPrice> GetProducts(string id)
         {

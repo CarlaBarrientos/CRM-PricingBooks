@@ -74,21 +74,22 @@ namespace CRM_PricingBooks.BusinessLogic
                 })
             });
         }
-        //NO FUNCIONA----------------------------------------
-        public void DeleteListProduct(int id)
+        //FUNCIONA :D----------------------------------------
+        public bool DeleteListProduct(string id)
         {
-            List<PricingBook> allProducts = _productTableDB.GetAll();
-            foreach (PricingBook product in allProducts)
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+            foreach (PricingBookDTO pbDTO in priceslist)
             {
-                if (product.Id.Equals(id))
+                if (pbDTO.Id.Equals(id))
                 {
-                    allProducts.Remove(product);
-                    break;
+                    priceslist.Remove(pbDTO);
+                    _productTableDB.Delete(id);
+                    return true;
                 }
-            }
 
+            }
+            return false;
         }
-        
         public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
         {
             PricingBook pbUpdated = new PricingBook();
