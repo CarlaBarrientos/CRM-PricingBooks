@@ -79,6 +79,23 @@ namespace CRM_PricingBooks.Database
                 }
             }
         }
+        public void Activate(string id)
+        {
+            int count = 0;
+
+            foreach (PricingBook pb in GetAll())
+            {
+                if (pb.Id.Equals(id))
+                {
+                    pb.Status = true;
+                    break;
+                }
+                else
+                {
+                    count += 1;
+                }
+            }
+        }
 
         public List<PricingBook> GetAll()
         {

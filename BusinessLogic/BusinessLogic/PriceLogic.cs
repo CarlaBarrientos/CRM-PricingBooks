@@ -90,6 +90,33 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             return false;
         }
+        public string ActivateList(string id)
+        {
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+            List<PricingBookDTO> filteredList = priceslist.Where(x => (x.Status == true)).ToList();
+
+            string aux = "";
+
+            if (filteredList.Count > 0)
+            {
+                aux = "AN EXISTING LIST IS ALREADY ACTIVATED ";
+                return aux + filteredList;
+            }
+            else
+            {
+                foreach (PricingBookDTO pbDTO in priceslist)
+                {
+                    if (pbDTO.Id.Equals(id))
+                    {
+                        pbDTO.Status = true;
+                        aux = "ACTIVATING LIST WITH ID " + id;
+                        _productTableDB.Activate(id);
+                        return aux;
+                    }
+                }
+                return aux;
+            }
+        }
         public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
         {
             PricingBook pbUpdated = new PricingBook();

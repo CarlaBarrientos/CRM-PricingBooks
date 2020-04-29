@@ -51,5 +51,12 @@ namespace CRM_PricingBooks.Controllers
             return _priceLogic.DeleteListProduct(id);
         }
 
+        [HttpPost]
+        [Route("pricing-books/{id}")]
+        public string ActivatePost(string id)
+        {
+            string active = _priceLogic.ActivateList(id);
+            return active;
+        }
     }
 }
