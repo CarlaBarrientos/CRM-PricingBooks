@@ -106,9 +106,9 @@ namespace CRM_PricingBooks.BusinessLogic
            string aux = "";
            List<ProductPriceDTO> priceslist = GetProducts(code);
 
-            foreach (ProductPriceDTO pp in priceslist)
+            foreach (ProductPriceDTO productprice in priceslist)
             {
-                priceslist.Remove(pp);
+                priceslist.Remove(productprice);
                 _productTableDB.Delete(code);
                  aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
                 return aux;
@@ -121,13 +121,13 @@ namespace CRM_PricingBooks.BusinessLogic
         
          string aux = "";
            List<ProductPriceDTO> priceslist = GetProducts(code);
-           //aumentar un if
+           
 
-            foreach (ProductPriceDTO pp in priceslist)
+            foreach (ProductPriceDTO productpricedto in priceslist)
             {
-                 if(pp.ProductCode.Equals(productcode))
+                 if(productpricedto.ProductCode.Equals(productcode))
                   {
-                    priceslist.Remove(pp);
+                    priceslist.Remove(productpricedto);
                     _productTableDB.DeleteProductCode(code,productcode);
                      aux = "PRICE LIST AND PRODUCTCODE EXIST, WILL BE REMOVED";
                     return aux;
