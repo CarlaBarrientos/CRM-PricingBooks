@@ -109,7 +109,7 @@ namespace CRM_PricingBooks.BusinessLogic
             foreach (ProductPriceDTO productprice in priceslist)
             {
                 priceslist.Remove(productprice);
-                _productTableDB.Delete(code);
+                _productTableDB.DeleteProduct(code);
                  aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
                 return aux;
             }
