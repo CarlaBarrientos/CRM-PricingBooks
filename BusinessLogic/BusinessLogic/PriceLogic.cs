@@ -157,17 +157,17 @@ namespace CRM_PricingBooks.BusinessLogic
         public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook) 
         {
             PricingBook pricingBook = new PricingBook();
-           //ProductPriceDTO productPrice = new ProductPriceDTO();
+            
             
             pricingBook.Name = newPricingBook.Name;
             pricingBook.Description = newPricingBook.Description;
             pricingBook.Id = SelfGenerationID();
             pricingBook.Status = false;
             pricingBook.ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
-                    {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice
-                    });
+            {
+                ProductCode = product.ProductCode,
+                FixedPrice = product.FixedPrice
+            });
             
             PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
             return new PricingBookDTO()
@@ -190,19 +190,19 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             List<PricingBookDTO> priceslist = GetPricingBooks();
 
-            string aux = "";
+            string deactivationMessage = "";
 
             foreach (PricingBookDTO pbDTO in priceslist)
+            {
+                if (pbDTO.Id.Equals(id))
                 {
-                    if (pbDTO.Id.Equals(id))
-                    {
-                        pbDTO.Status = false;
-                        aux = "DEACTIVATING LIST WITH ID " + id;
-                        _productTableDB.DeActivate(id);
-                        return aux;
-                    }
+                    pbDTO.Status = false;
+                    deactivationMessage = "DEACTIVATING LIST WITH ID " + id;
+                    _productTableDB.DeActivate(id);
+                    return deactivationMessage;
                 }
-                return aux;
+            }
+            return deactivationMessage;
         }
 
         private string SelfGenerationID()

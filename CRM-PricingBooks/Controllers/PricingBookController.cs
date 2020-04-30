@@ -66,8 +66,8 @@ namespace CRM_PricingBooks.Controllers
         [Route("pricing-books/{id}/deactivate")]
         public string DeActivatePost(string id)
         {
-            string active = _priceLogic.DeActivateList(id);
-            return active;
+            string deactive = _priceLogic.DeActivateList(id);
+            return deactive;
         }
     }
 }
