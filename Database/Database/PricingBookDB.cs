@@ -171,25 +171,25 @@ namespace CRM_PricingBooks.Database
         
         public void DeleteProduct(string code)
         {          
-           var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
-            if(pb != null)
+           var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
+            if(pricingbook != null)
             {
-                foreach (ProductPrice pp in GetProducts(code))
+                foreach (ProductPrice productprice in GetProducts(code))
                 {
-                    pb.ProductsList.Remove(pp);
+                    pricingbook.ProductsList.Remove(productprice);
                     
                 } 
             }
         }
         public void DeleteProductCode(string code,string productcode)
         {          
-           var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
-            if(pb != null)
+           var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
+            if(pricingbook != null)
             {
-                foreach (ProductPrice pp in GetProducts(code))
+                foreach (ProductPrice productprice in GetProducts(code))
                 {
-                    if(pp.ProductCode.Equals(productcode)){
-                       pb.ProductsList.Remove(pp);
+                    if(productprice.ProductCode.Equals(productcode)){
+                       pricingbook.ProductsList.Remove(productprice);
 
                     }
                     
