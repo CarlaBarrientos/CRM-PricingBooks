@@ -21,17 +21,18 @@ namespace CRM_PricingBooks.BusinessLogic
         public PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id)
         {
             List<ProductPrice> newProductPrice = new List<ProductPrice>();
-            foreach(ProductPriceDTO pp in newProduct)
+
+            foreach(ProductPriceDTO productPrice in newProduct)
             {
                 newProductPrice.Add(new ProductPrice()
                 {
-                    ProductCode = pp.ProductCode,
-                    FixedPrice = pp.FixedPrice
+                    ProductCode = productPrice.ProductCode,
+                    FixedPrice = productPrice.FixedPrice
                 });
             }
             
             PricingBook pricingBookInDB = _productTableDB.AddNewProduct(newProductPrice, id);
-
+            //Mapping PricingBook => PricingBookDTO
             return new PricingBookDTO()
             {
                 Id = pricingBookInDB.Id,

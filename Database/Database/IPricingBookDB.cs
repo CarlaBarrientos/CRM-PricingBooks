@@ -9,15 +9,15 @@ namespace CRM_PricingBooks.Database
     public interface IPricingBookDB
     {
         List<PricingBook> GetAll();
-        PricingBook Update(PricingBook pbToUpdate, string id);
+        PricingBook Update(PricingBook pricingBookToUpdate, string id);
         PricingBook AddNew(PricingBook newPricingBook);
         void Delete(string code);
         void Activate(string id);
         void DeActivate(string id);
 
-        PricingBook AddNewProduct(List<ProductPrice> newProduct, string id);
+        PricingBook AddNewProduct(List<ProductPrice> newProducts, string id);
         List<ProductPrice> GetProducts(string id);
-        PricingBook UpdateProduct(List<ProductPrice> ppToUpdate, string id);
+        PricingBook UpdateProduct(List<ProductPrice> productToUpdate, string id);
         void DeleteProduct(string code);
         void DeleteProductCode(string code,string productcode);
 

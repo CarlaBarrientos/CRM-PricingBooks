@@ -12,7 +12,45 @@ namespace CRM_PricingBooks.Database
 
         public PricingBookDB()
         {
-            PricingBooks = new List<PricingBook>();
+            PricingBooks = new List<PricingBook>()
+            {
+                new PricingBook()
+                {
+                    Id="PricingBook-1",
+                    Name="Lista de precios 2020", 
+                    Description="Lista de precios de la gestión 2020",
+                    Status = false,
+                    ProductsList = new List<ProductPrice>()
+                    {
+                        new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=200},
+                        new ProductPrice(){ProductCode="SOCCER-002", FixedPrice=185},
+                        new ProductPrice(){ProductCode="SOCCER-003", FixedPrice=310},
+                        new ProductPrice(){ProductCode="SOCCER-004", FixedPrice=250},
+                        new ProductPrice(){ProductCode="BASKET-001", FixedPrice=330},
+                        new ProductPrice(){ProductCode="BASKET-002", FixedPrice=150},
+                        new ProductPrice(){ProductCode="BASKET-003", FixedPrice=270},
+                        new ProductPrice(){ProductCode="BASKET-004", FixedPrice=300}
+                    }
+                },
+                new PricingBook()
+                { 
+                    Id="PricingBook-2",
+                    Name="Lista de precios 2019", 
+                    Description="Lista de precios de la gestión 2019",
+                    Status = false,
+                    ProductsList = new List<ProductPrice>()
+                    {
+                        new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=190},
+                        new ProductPrice(){ProductCode="SOCCER-002", FixedPrice=175},
+                        new ProductPrice(){ProductCode="SOCCER-003", FixedPrice=390},
+                        new ProductPrice(){ProductCode="SOCCER-004", FixedPrice=240},
+                        new ProductPrice(){ProductCode="BASKET-001", FixedPrice=320},
+                        new ProductPrice(){ProductCode="BASKET-002", FixedPrice=140},
+                        new ProductPrice(){ProductCode="BASKET-003", FixedPrice=260},
+                        new ProductPrice(){ProductCode="BASKET-004", FixedPrice=280}
+                    }
+                }
+            };
         }
 
         //***************************CRUD PRICINGBOOKS*************************
@@ -23,44 +61,44 @@ namespace CRM_PricingBooks.Database
             return newPricingBook;
         }
 
-        public PricingBook Update(PricingBook pbToUpdate, string id)
+        public PricingBook Update(PricingBook pricingbookToUpdate, string id)
         {
-            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
-            if (pb != null)
+            var pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            if (pricingBook != null)
             {
 
                 //if(string.IsNullOrEmpty(pbToUpdate.Id))
                 //{
-                    pbToUpdate.Id = id;
+                    pricingbookToUpdate.Id = id;
                 /*}else
                 {
                     pb.Id = pbToUpdate.Id;
                 }*/
-                if(string.IsNullOrEmpty(pbToUpdate.Name))
+                if(string.IsNullOrEmpty(pricingbookToUpdate.Name))
                 {
-                    pbToUpdate.Name = pb.Name;
+                    pricingbookToUpdate.Name = pricingBook.Name;
                 }else
                 {
-                    pb.Name = pbToUpdate.Name;
+                    pricingBook.Name = pricingbookToUpdate.Name;
                 }
-                if(string.IsNullOrEmpty(pbToUpdate.Description))
+                if(string.IsNullOrEmpty(pricingbookToUpdate.Description))
                 {
-                    pbToUpdate.Description = pb.Description;
+                    pricingbookToUpdate.Description = pricingBook.Description;
                 }else
                 {
-                    pb.Description = pbToUpdate.Description;
+                    pricingBook.Description = pricingbookToUpdate.Description;
                 }
-                pbToUpdate.Status = pb.Status;
-                if(pbToUpdate.ProductsList.Count() != 0)
+                pricingbookToUpdate.Status = pricingBook.Status;
+                if(pricingbookToUpdate.ProductsList.Count() != 0)
                 {
-                    pb.ProductsList = pbToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                    pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
                     {
                         ProductCode = product.ProductCode,
                         FixedPrice = product.FixedPrice
                     });
                 }
             }
-            return pbToUpdate;
+            return pricingbookToUpdate;
         }
         public void Delete(string id)
         {
@@ -118,16 +156,16 @@ namespace CRM_PricingBooks.Database
         //***************************CRUD PRODUCTS*************************
         public PricingBook AddNewProduct(List<ProductPrice> newProduct, string id)
         {
-            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
-            if(pb != null)
+            var pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            if(pricingBook != null)
             {
-                foreach(ProductPrice pp in newProduct)
+                foreach(ProductPrice product in newProduct)
                 {
-                    pb.ProductsList.Add(pp);
+                    pricingBook.ProductsList.Add(product);
                 }
             }
 
-            return pb;
+            return pricingBook;
         }
         
         public void DeleteProduct(string code)
@@ -160,18 +198,18 @@ namespace CRM_PricingBooks.Database
 
         public List<ProductPrice> GetProducts(string id)
         {
-            var pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
-            List<ProductPrice> productos = new List<ProductPrice>();
-            if(pb != null)
+            var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            List<ProductPrice> products = new List<ProductPrice>();
+            if(pricingbook != null)
             {
-                foreach (ProductPrice pp in pb.ProductsList)
+                foreach (ProductPrice product in pricingbook.ProductsList)
                 {
-                    productos.Add(pp);
+                    products.Add(product);
 
                 }
             }
 
-            return productos;
+            return products;
         }
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
         {

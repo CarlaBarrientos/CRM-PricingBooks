@@ -12,39 +12,40 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public class PriceLogic : IPriceLogic
     {
-        private int count = 0;
+        private int code = 0;
         private readonly IPricingBookDB _productTableDB;
 
         public PriceLogic(IPricingBookDB productTableDB)
         {
             _productTableDB = productTableDB;
         }
-        //FUNCIONA------------------------------------------------------
+
         public List<PricingBookDTO> GetPricingBooks() {
 
             List<PricingBook> allProducts = _productTableDB.GetAll();
-            List<PricingBook> filteredList = allProducts.Where(x => (x.Status == true)).ToList();
-            List<PricingBook> filteredListF = allProducts.Where(x => (x.Status == false)).ToList();
+            List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();
+            List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
 
-            if(filteredList.Count > 0 && pricesLists.Count == 0)
+            if(filteredListTrue.Count > 0 && pricesLists.Count == 0)
             {
-                foreach (PricingBook listPB in filteredList)
+                foreach (PricingBook pricingBook in filteredListTrue)
                 {
-                    fillPriceList(pricesLists, listPB);
+                    fillPriceList(pricesLists, pricingBook);
 
                 }
             }
 
-            foreach (PricingBook pb in filteredListF)
+            //Mapping PricingBook => PricingBookDTO
+            foreach (PricingBook pricingBook in filteredListFalse)
             {
                 pricesLists.Add(new PricingBookDTO()
                 {
-                    Id = pb.Id.ToString(),
-                    Name = pb.Name,
-                    Description = pb.Description,
-                    Status = pb.Status,
-                    ProductPrices = pb.ProductsList.ConvertAll(product => new ProductPriceDTO
+                    Id = pricingBook.Id.ToString(),
+                    Name = pricingBook.Name,
+                    Description = pricingBook.Description,
+                    Status = pricingBook.Status,
+                    ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
                     {
                         ProductCode = product.ProductCode,
                         FixedPrice = product.FixedPrice,
@@ -58,15 +59,15 @@ namespace CRM_PricingBooks.BusinessLogic
 
         }
         
-        private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook listPB)
+        private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
         {           
             pricesLists.Add(new PricingBookDTO()
             {
-                Id = listPB.Id.ToString(),
-                Name = listPB.Name,
-                Description = listPB.Description,
-                Status = listPB.Status,   
-                ProductPrices = listPB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                Id = pricingBook.Id.ToString(),
+                Name = pricingBook.Name,
+                Description = pricingBook.Description,
+                Status = pricingBook.Status,   
+                ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
@@ -210,15 +211,15 @@ namespace CRM_PricingBooks.BusinessLogic
             
             if(allProducts.Count == 0)
             {
-                count = 1;
+                code = 1;
             }
             else
             {
                 string[] division = allProducts[allProducts.Count - 1].Id.Split('-');
-                count = Int32.Parse(division[1]) + 1;                
+                code = Int32.Parse(division[1]) + 1;                
             }
 
-            return "PricingBook-"+count.ToString();
+            return "PricingBook-"+code.ToString();
         }
 
         private double calculatediscount(String activeCampaign, Double price) //Calculating discounts
