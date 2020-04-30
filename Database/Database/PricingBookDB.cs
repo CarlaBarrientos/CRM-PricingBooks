@@ -64,6 +64,7 @@ namespace CRM_PricingBooks.Database
         public PricingBook Update(PricingBook pricingbookToUpdate, string id)
         {
             var pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            //verifying wich fields have to be updated
             if (pricingBook != null)
             {
 

@@ -23,15 +23,15 @@ namespace CRM_PricingBooks.BusinessLogic
         public List<PricingBookDTO> GetPricingBooks() {
 
             List<PricingBook> allProducts = _productTableDB.GetAll();
-            List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();
-            List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();
+            List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
+            List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();//filtering deactivate lists
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
 
             if(filteredListTrue.Count > 0 && pricesLists.Count == 0)
             {
                 foreach (PricingBook pricingBook in filteredListTrue)
                 {
-                    fillPriceList(pricesLists, pricingBook);
+                    fillPriceList(pricesLists, pricingBook);//filling active price list calculating discounts
 
                 }
             }
@@ -215,7 +215,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             else
             {
-                string[] division = allProducts[allProducts.Count - 1].Id.Split('-');
+                string[] division = allProducts[allProducts.Count - 1].Id.Split('-');//getting the id of the last data stored in data base
                 code = Int32.Parse(division[1]) + 1;                
             }
 
