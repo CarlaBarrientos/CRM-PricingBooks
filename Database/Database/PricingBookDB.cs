@@ -215,14 +215,14 @@ namespace CRM_PricingBooks.Database
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
         {
 
-            PricingBook pb = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
-            if (pb != null)
+            PricingBook pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            if (pricingBook != null)
             {
-                pb.ProductsList = ppToUpdate;
+                pricingBook.ProductsList = ppToUpdate;
   
             }
 
-            return pb;
+            return pricingBook;
         }
     }
 

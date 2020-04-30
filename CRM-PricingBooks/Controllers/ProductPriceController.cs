@@ -12,8 +12,8 @@ using Microsoft.Extensions.Logging;
 
 namespace CRM_PricingBooks.Controllers
 {
-    [Route("crm")]
-    [ApiController]
+   // [Route("crm")]
+     [ApiController]
     public class ProductPriceController : ControllerBase
     {
         private readonly IProductLogic _productLogic;

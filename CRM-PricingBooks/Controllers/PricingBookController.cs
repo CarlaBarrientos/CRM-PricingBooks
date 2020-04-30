@@ -11,8 +11,8 @@ using CRM_PricingBooks.BusinessLogic;
 
 namespace CRM_PricingBooks.Controllers
 {
-    [Route("crm")]
-    [ApiController]
+    //  [Route("crm")]
+      [ApiController]
 
     public class PricingBookController : ControllerBase
     {
