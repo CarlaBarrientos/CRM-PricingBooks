@@ -18,3 +18,6 @@ O Promotion Price is calculated based on the fixed price according to the active
 
 ## Credits
 TODO: Vincent Valenzuela, Carla Barrientos, Mateo Lopez, Melissa
+
+## Tasks Part 2
+- Task_1: Add Campaigns as a backing service
