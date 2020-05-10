@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class CampaignBackingService
+    public class CampaignBackingService : ICampaignBackingService
     {
         private readonly IConfiguration _configuration;
         public CampaignBackingService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-        public async Task<List<CampaignBSDTO>> GetAllProduct()
+        public async Task<List<CampaignBSDTO>> GetAllCampaign()
         {
             try
             {
@@ -24,7 +24,7 @@ namespace Services
                 HttpClient CampaignsMS = new HttpClient();
 
                 string msPath = _configuration.GetSection("Microservices").GetSection("Campaigns").Value;
-
+                Console.WriteLine(msPath);
                 // Executing an ASYNC HTTP Method could be: Get, Post, Put, Delete
                 // In this case is a GET
                 // HttpContent content = new 
