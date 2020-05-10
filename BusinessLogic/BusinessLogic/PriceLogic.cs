@@ -16,10 +16,10 @@ namespace CRM_PricingBooks.BusinessLogic
         private readonly IPricingBookDB _productTableDB;
         private readonly ICampaignBackingService _campaign;
         
-        public PriceLogic(IPricingBookDB productTableDB, ICampaignBackingService campaignDB)
+        public PriceLogic(IPricingBookDB productTableDB)
         {
             _productTableDB = productTableDB;
-            _campaign = campaignDB;
+           
 
         }
         
