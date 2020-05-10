@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 using CRM_PricingBooks.BusinessLogic;
 using CRM_PricingBooks.Database;
+using Services;
 using Microsoft.OpenApi.Models;
 
 namespace CRM_PricingBooks
@@ -39,11 +40,25 @@ namespace CRM_PricingBooks
         {   
             services.AddControllers();
 
-            services.AddTransient<IPriceLogic, PriceLogic>();
+            services.AddTransient<IPriceLogic,PriceLogic>();
             services.AddSingleton<IPricingBookDB, PricingBookDB>();
 
             services.AddTransient<IProductLogic, ProductLogic>();
+            services.AddTransient<ICampaignBackingService, CampaignBackingService>();
+            //services.AddTransient<ICampaignBackingService, CampaignBackingService>();
 
+            // ADDING CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.WithOrigins("*")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      );
+            });
+            // End CORS block
+
+            //Add Swagger
             var swaggerTitle = Configuration
                 .GetSection(SWAGGER_SECTION_SETTING_KEY)
                 .GetSection(SWAGGER_SECTION_SETTING_TITLE_KEY);
