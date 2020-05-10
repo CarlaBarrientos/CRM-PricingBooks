@@ -24,7 +24,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:4401"
+      "applicationUrl": "http://localhost:4405"
     },
     "QA": {
       "commandName": "Project",
@@ -33,7 +33,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "QA"
       },
-      "applicationUrl": "http://localhost:4401"
+      "applicationUrl": "http://localhost:4405"
     }
   }
 }

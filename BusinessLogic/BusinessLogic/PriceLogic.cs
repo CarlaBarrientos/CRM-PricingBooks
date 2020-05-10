@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
+using Services;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
@@ -14,13 +14,18 @@ namespace CRM_PricingBooks.BusinessLogic
     {
         private int code = 0;
         private readonly IPricingBookDB _productTableDB;
-
-        public PriceLogic(IPricingBookDB productTableDB)
+        private readonly ICampaignBackingService _campaign;
+        
+        public PriceLogic(IPricingBookDB productTableDB, ICampaignBackingService campaignDB)
         {
             _productTableDB = productTableDB;
-        }
+            _campaign = campaignDB;
 
-        public List<PricingBookDTO> GetPricingBooks() {
+        }
+        
+        
+
+        public List<PricingBookDTO> GetPricingBooks() { //Reads all Pricing Books, also updates their price based on the active campaign.
 
             List<PricingBook> allProducts = _productTableDB.GetAll();
             List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
@@ -60,7 +65,11 @@ namespace CRM_PricingBooks.BusinessLogic
         }
         
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
-        {           
+        {
+            //Here i recover the active campaign to calculate the discounts
+            
+            List<CampaignBSDTO> campaigns = _campaign.GetAllCampaign().Result;
+
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),
@@ -71,7 +80,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
-                    PromotionPrice = calculatediscount("XMAS", product.FixedPrice)
+                    PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
                 })
             });
         }

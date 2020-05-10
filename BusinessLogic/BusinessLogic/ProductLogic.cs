@@ -18,7 +18,7 @@ namespace CRM_PricingBooks.BusinessLogic
             _productTableDB = productTableDB;
         }
 
-        public PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id)
+        public PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id) //Create new product 
         {
             List<ProductPrice> newProductPrice = new List<ProductPrice>();
 
