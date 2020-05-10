@@ -16,10 +16,43 @@ O Promotion Price is calculated based on the fixed price according to the active
 ▪ If it is BLACK FRIDAY: 25%
 ▪ If there is no active campaign there is no promotional price
 
+
+
+
+
+Grupo 4: 
+● Que los endpoints sean parte del API GATEWAY (Gabriel Acosta, Alejandra Quelali)
+    
+    o /api-crm/pricing-books =&gt; HTTP/GET: http://localhost:XXXX/pricing-books =&gt;
+    send/return same values
+
+    o /api-crm/pricing-books/{id}
+
+    o etc
+
+● Que los datos sean persistidos en una base de datos como: JSON file (configurable) (Vanessa Bustillos)
+    
+    o c:\websites\crm\pricing-books.json
+
+● Use Backing Service: Campaigns to calculate the price based on active campaign (Diego Rosazza)
+
+● Que la aplicación PRICING BOOKS contenga manejo de errores (Ricardo Fernandez)
+
+● OPCIONAL: Que la aplicación PRICING BOOKS contenga registro logs
+● OPCIONAL: Crear una interfaz gráfica sencilla usando VUE.JS
+    o Debe existir dos vistas:
+        ▪ una para el listado de Pricing Books
+        ▪ otra el detalle de los Pricing Books más sus listados de Produtos
+    o El habilitar/deshabilitar pricing books debe ser un switch button
+
 ## Credits
+
 TODO: Vincent Valenzuela, Carla Barrientos, Mateo Lopez, Melissa
 
 ## Tasks Part 2
 - Task_1: Add Campaigns as a backing service
 ## Usefull Data
 - Swagger runtime url: http://localhost:4405/swagger/index.html
+
+
+
