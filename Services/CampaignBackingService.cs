@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class CampaignBackingService
+    public class CampaignBackingService : ICampaignBackingService
     {
         private readonly IConfiguration _configuration;
         public CampaignBackingService(IConfiguration configuration)
@@ -26,16 +26,16 @@ namespace Services
             {
                 // Creating HTTP Client
                 HttpClient CampaignsMS = new HttpClient();
-
+                Console.WriteLine("llegue 1");
                 string msPath = _configuration.GetSection("Microservices").GetSection("Campaigns").Value;
-
+                Console.WriteLine("llegue 2");
                 // Executing an ASYNC HTTP Method could be: Get, Post, Put, Delete
                 // In this case is a GET
                 // HttpContent content = new 
                 // HttpResponseMessage response = await productMS.GetAsync($"{msPath}/pricing-books/PricingBook-001");
                 // HttpResponseMessage response = await productMS.GetAsync($"{msPath}/campaigns/Campaigns-001");
-                HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/campaigns");
-
+                HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns");
+                Console.WriteLine("llegue 3");
                 int statusCode = (int)response.StatusCode;
                 if (statusCode == 200) // OK
                 {
@@ -54,7 +54,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                throw new BackingServiceException("Connection with Products is not working: " + ex.Message);
+                throw new BackingServiceException("Connection with Campaigns is not working: " + ex.Message);
             }
 
 

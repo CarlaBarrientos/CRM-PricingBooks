@@ -14,12 +14,13 @@ namespace CRM_PricingBooks.BusinessLogic
     {
         private int code = 0;
         private readonly IPricingBookDB _productTableDB;
-        private readonly ICampaignBackingService _campaign;
+        private readonly ICampaignBackingService campaign;
+       
         
-        public PriceLogic(IPricingBookDB productTableDB)
+        public PriceLogic(IPricingBookDB productTableDB, ICampaignBackingService campaignBS)
         {
             _productTableDB = productTableDB;
-           
+            campaign = campaignBS;
 
         }
         
@@ -40,7 +41,8 @@ namespace CRM_PricingBooks.BusinessLogic
 
                 }
             }
-
+            
+            List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
             //Mapping PricingBook => PricingBookDTO
             foreach (PricingBook pricingBook in filteredListFalse)
             {
@@ -54,7 +56,7 @@ namespace CRM_PricingBooks.BusinessLogic
                     {
                         ProductCode = product.ProductCode,
                         FixedPrice = product.FixedPrice,
-                        PromotionPrice = product.FixedPrice
+                        PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
                     })
                 });
 
@@ -67,9 +69,9 @@ namespace CRM_PricingBooks.BusinessLogic
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
         {
             //Here i recover the active campaign to calculate the discounts
-            
-            List<CampaignBSDTO> campaigns = _campaign.GetAllCampaign().Result;
 
+            
+            List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),

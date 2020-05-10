@@ -44,6 +44,7 @@ namespace CRM_PricingBooks
             services.AddSingleton<IPricingBookDB, PricingBookDB>();
 
             services.AddTransient<IProductLogic, ProductLogic>();
+            services.AddTransient<ICampaignBackingService, CampaignBackingService>();
             //services.AddTransient<ICampaignBackingService, CampaignBackingService>();
 
             // ADDING CORS
