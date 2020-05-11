@@ -53,7 +53,9 @@ namespace CRM_PricingBooks.BusinessLogic
 
         public List<ProductPriceDTO> GetProducts(string id)
         {
+
             List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
+
             /* List<ProductPriceDTO> products = new List<ProductPriceDTO>();
              foreach (ProductPrice pp in allProducts)
              {
