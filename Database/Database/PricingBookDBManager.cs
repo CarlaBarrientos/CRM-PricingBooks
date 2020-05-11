@@ -81,8 +81,9 @@ namespace CRM_PricingBooks.Database
                     });
                 }
             }
+           
             SaveChanges();
-            return pricingBook;
+            return pricingbookToUpdate;
         }
         public void Delete(string id)
         {

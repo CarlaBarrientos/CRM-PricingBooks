@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database.Models;
+using BusinessLogic.DTOModels;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
@@ -33,41 +34,43 @@ namespace CRM_PricingBooks.BusinessLogic
             
             PricingBook pricingBookInDB = _productTableDB.AddNewProduct(newProductPrice, id);
             //Mapping PricingBook => PricingBookDTO
-            return new PricingBookDTO()
-            {
-                Id = pricingBookInDB.Id,
-                Name = pricingBookInDB.Name,
-                Description = pricingBookInDB.Description,
-                Status = pricingBookInDB.Status,
-                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
-                {
-                    ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-                    PromotionPrice = product.FixedPrice
-                })
+            /* return new PricingBookDTO()
+             {
+                 Id = pricingBookInDB.Id,
+                 Name = pricingBookInDB.Name,
+                 Description = pricingBookInDB.Description,
+                 Status = pricingBookInDB.Status,
+                 ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                 {
+                     ProductCode = product.ProductCode,
+                     FixedPrice = product.FixedPrice,
+                     PromotionPrice = product.FixedPrice
+                 })
 
-            };
+             };*/
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
         }
 
         public List<ProductPriceDTO> GetProducts(string id)
         {
             List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
-            List<ProductPriceDTO> products = new List<ProductPriceDTO>();
-            foreach (ProductPrice pp in allProducts)
-            {
-                products.Add(
-                    new ProductPriceDTO()
-                    {
-                        ProductCode = pp.ProductCode,
-                        FixedPrice = pp.FixedPrice,
-                        PromotionPrice = pp.FixedPrice
+            /* List<ProductPriceDTO> products = new List<ProductPriceDTO>();
+             foreach (ProductPrice pp in allProducts)
+             {
+                 products.Add(
+                     new ProductPriceDTO()
+                     {
+                         ProductCode = pp.ProductCode,
+                         FixedPrice = pp.FixedPrice,
+                         PromotionPrice = pp.FixedPrice
 
-                    }
+                     }
 
-                );
-            }
+                 );
+             }
 
-            return products;
+             return products;*/
+            return DTOUtil.MapProductListDatabase_To_DTOList(allProducts);
         }
 
 
@@ -76,29 +79,31 @@ namespace CRM_PricingBooks.BusinessLogic
 
             List<ProductPrice> productPriceupdated = new List<ProductPrice>();
             foreach(ProductPriceDTO product in productToUpdate){
-                ProductPrice newproduct = new ProductPrice();
-                newproduct.ProductCode = product.ProductCode;
-                newproduct.FixedPrice = product.FixedPrice;
-                productPriceupdated.Add(newproduct);
-            }
-
-            PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
-
-            return new PricingBookDTO()
-            {
-                Id = pricingBookInDB.Id,
-                Name = pricingBookInDB.Name,
-                Description = pricingBookInDB.Description,
-                Status = pricingBookInDB.Status,
-                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                ProductPrice newproduct = new ProductPrice
                 {
                     ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-                    PromotionPrice = product.FixedPrice
-                })
+                    FixedPrice = product.FixedPrice
+                };
+                productPriceupdated.Add(newproduct);
+            }
+            _productTableDB.UpdateProduct(productPriceupdated, id);
+            //PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
 
-            };
+            /*  return new PricingBookDTO()
+              {
+                  Id = pricingBookInDB.Id,
+                  Name = pricingBookInDB.Name,
+                  Description = pricingBookInDB.Description,
+                  Status = pricingBookInDB.Status,
+                  ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                  {
+                      ProductCode = product.ProductCode,
+                      FixedPrice = product.FixedPrice,
+                      PromotionPrice = product.FixedPrice
+                  })
 
+              };*/
+            return DTOUtil.MapPricingBookDatabase_To_DTO(_productTableDB.UpdateProduct(productPriceupdated, id));
         }
 
          public string DeleteProduct(string code)
