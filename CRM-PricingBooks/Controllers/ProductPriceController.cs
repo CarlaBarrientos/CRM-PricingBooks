@@ -16,7 +16,7 @@ namespace CRM_PricingBooks.Controllers
      [ApiController]
     public class ProductPriceController : ControllerBase
     {
-        private readonly IProductLogic _productLogic;
+        private IProductLogic _productLogic;
 
         public ProductPriceController(IProductLogic studentLogic)
         {

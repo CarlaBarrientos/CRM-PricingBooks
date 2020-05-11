@@ -16,7 +16,7 @@ namespace CRM_PricingBooks.Controllers
 
     public class PricingBookController : ControllerBase
     {
-        private readonly IPriceLogic _priceLogic;
+        private IPriceLogic _priceLogic;
 
         public PricingBookController(IPriceLogic pricelogic)
         {
