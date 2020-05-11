@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM_PricingBooks.Database.Models;
+using Database.Database;
 
 namespace CRM_PricingBooks.Database
 {
-    public interface IPricingBookDB
+    public interface IPricingBookDBManager : IDBManager
     {
         List<PricingBook> GetAll();
         PricingBook Update(PricingBook pricingBookToUpdate, string id);

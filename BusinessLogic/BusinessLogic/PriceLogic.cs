@@ -13,11 +13,11 @@ namespace CRM_PricingBooks.BusinessLogic
     public class PriceLogic : IPriceLogic
     {
         private int code = 0;
-        private readonly IPricingBookDB _productTableDB;
+        private IPricingBookDBManager _productTableDB;
         private readonly ICampaignBackingService campaign;
        
         
-        public PriceLogic(IPricingBookDB productTableDB, ICampaignBackingService campaignBS)
+        public PriceLogic(IPricingBookDBManager productTableDB, ICampaignBackingService campaignBS)
         {
             _productTableDB = productTableDB;
             campaign = campaignBS;

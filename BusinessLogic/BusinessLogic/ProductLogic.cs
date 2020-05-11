@@ -11,16 +11,16 @@ namespace CRM_PricingBooks.BusinessLogic
 {
     public class ProductLogic:IProductLogic
     {
-        private readonly IPricingBookDB _productTableDB;
+        private IPricingBookDBManager _productTableDB;
 
-        public ProductLogic(IPricingBookDB productTableDB)
+        public ProductLogic(IPricingBookDBManager productTableDB)
         {
             _productTableDB = productTableDB;
         }
 
         public PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id) //Create new product 
         {
-            List<ProductPrice> newProductPrice = new List<ProductPrice>();
+            List<ProductPrice> newProductPrice = new List<ProductPrice>(); //DTO -> Database
 
             foreach(ProductPriceDTO productPrice in newProduct)
             {

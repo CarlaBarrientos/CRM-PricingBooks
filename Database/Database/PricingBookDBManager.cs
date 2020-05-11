@@ -1,80 +1,62 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CRM_PricingBooks.Database.Models;
+using Database.Database.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace CRM_PricingBooks.Database
 {
-    public class PricingBookDB : IPricingBookDB
+    public class PricingBookDBManager : IPricingBookDBManager
     {
-        private List<PricingBook> PricingBooks{ get; set; }
+        private List<PricingBook> _pricingBookList;
 
-        public PricingBookDB()
+        private readonly IConfiguration _configuration;
+        private string _dbPath;
+        private DBContext _dbContainer;
+        public readonly ILogger<PricingBookDBManager> _logger;
+
+
+        public PricingBookDBManager(IConfiguration config)
         {
-            PricingBooks = new List<PricingBook>()
-            {
-                new PricingBook()
-                {
-                    Id="PricingBook-1",
-                    Name="Lista de precios 2020", 
-                    Description="Lista de precios de la gestión 2020",
-                    Status = false,
-                    ProductsList = new List<ProductPrice>()
-                    {
-                        new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=200},
-                        new ProductPrice(){ProductCode="SOCCER-002", FixedPrice=185},
-                        new ProductPrice(){ProductCode="SOCCER-003", FixedPrice=310},
-                        new ProductPrice(){ProductCode="SOCCER-004", FixedPrice=250},
-                        new ProductPrice(){ProductCode="BASKET-001", FixedPrice=330},
-                        new ProductPrice(){ProductCode="BASKET-002", FixedPrice=150},
-                        new ProductPrice(){ProductCode="BASKET-003", FixedPrice=270},
-                        new ProductPrice(){ProductCode="BASKET-004", FixedPrice=300}
-                    }
-                },
-                new PricingBook()
-                { 
-                    Id="PricingBook-2",
-                    Name="Lista de precios 2019", 
-                    Description="Lista de precios de la gestión 2019",
-                    Status = false,
-                    ProductsList = new List<ProductPrice>()
-                    {
-                        new ProductPrice(){ProductCode="SOCCER-001", FixedPrice=190},
-                        new ProductPrice(){ProductCode="SOCCER-002", FixedPrice=175},
-                        new ProductPrice(){ProductCode="SOCCER-003", FixedPrice=390},
-                        new ProductPrice(){ProductCode="SOCCER-004", FixedPrice=240},
-                        new ProductPrice(){ProductCode="BASKET-001", FixedPrice=320},
-                        new ProductPrice(){ProductCode="BASKET-002", FixedPrice=140},
-                        new ProductPrice(){ProductCode="BASKET-003", FixedPrice=260},
-                        new ProductPrice(){ProductCode="BASKET-004", FixedPrice=280}
-                    }
-                }
-            };
+            _configuration = config;
+            InitDBContext();
+        }
+        public void InitDBContext()
+        {
+            _dbPath = _configuration.GetSection("Database").GetSection("connectionString").Value;
+            //Log.Logger.Information("test");
+            _dbContainer = JsonConvert.DeserializeObject<DBContext>(File.ReadAllText(_dbPath));
+            _pricingBookList = _dbContainer.PricingBooks;
+        }
+
+        public void SaveChanges()
+        {
+            File.WriteAllText(_dbPath, JsonConvert.SerializeObject(_dbContainer));
         }
 
         //***************************CRUD PRICINGBOOKS*************************
 
         public PricingBook AddNew(PricingBook newPricingBook)
         {
-            PricingBooks.Add(newPricingBook);
+            _pricingBookList.Add(newPricingBook);
+            SaveChanges();
             return newPricingBook;
         }
 
         public PricingBook Update(PricingBook pricingbookToUpdate, string id)
         {
-            var pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
             //verifying wich fields have to be updated
             if (pricingBook != null)
             {
-
-                //if(string.IsNullOrEmpty(pbToUpdate.Id))
-                //{
                     pricingbookToUpdate.Id = id;
-                /*}else
-                {
-                    pb.Id = pbToUpdate.Id;
-                }*/
+                
                 if(string.IsNullOrEmpty(pricingbookToUpdate.Name))
                 {
                     pricingbookToUpdate.Name = pricingBook.Name;
@@ -99,39 +81,31 @@ namespace CRM_PricingBooks.Database
                     });
                 }
             }
-            return pricingbookToUpdate;
+            SaveChanges();
+            return pricingBook;
         }
         public void Delete(string id)
         {
-            int count = 0;
-
-            foreach(PricingBook pb in GetAll())
+            foreach(PricingBook pb in _pricingBookList)
             {
                 if (pb.Id.Equals(id))
                 {
-                    GetAll().RemoveAt(count);
+                    _pricingBookList.Remove(pb);
+                    SaveChanges();
                     break;
                 }
-                else
-                {
-                    count += 1;
-                }
             }
+            
         }
         public void Activate(string id)
         {
-            int count = 0;
-
-            foreach (PricingBook pb in GetAll())
+            foreach (PricingBook pb in _pricingBookList)
             {
                 if (pb.Id.Equals(id))
                 {
                     pb.Status = true;
+                    SaveChanges();
                     break;
-                }
-                else
-                {
-                    count += 1;
                 }
             }
         }
@@ -139,11 +113,12 @@ namespace CRM_PricingBooks.Database
         public void DeActivate(string id)
         {
 
-            foreach (PricingBook pb in GetAll())
+            foreach (PricingBook pb in _pricingBookList)
             {
                 if (pb.Id.Equals(id))
                 {
                     pb.Status = false;
+                    SaveChanges();
                     break;
                 }
             }
@@ -151,46 +126,47 @@ namespace CRM_PricingBooks.Database
 
         public List<PricingBook> GetAll()
         {
-            return PricingBooks;
+            return _pricingBookList;
         }
 
         //***************************CRUD PRODUCTS*************************
         public PricingBook AddNewProduct(List<ProductPrice> newProduct, string id)
         {
-            var pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
             if(pricingBook != null)
             {
                 foreach(ProductPrice product in newProduct)
                 {
                     pricingBook.ProductsList.Add(product);
+                    
                 }
+                SaveChanges();
             }
-
+            
             return pricingBook;
         }
         
         public void DeleteProduct(string code)
-        {          
-           var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
-            if(pricingbook != null)
-            {
+        {
+            PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(code));
+           
                 foreach (ProductPrice productprice in GetProducts(code))
                 {
                     pricingbook.ProductsList.Remove(productprice);
-                    
+                    SaveChanges();
                 } 
-            }
+            
         }
         public void DeleteProductCode(string code,string productcode)
-        {          
-           var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(code));
+        {
+            PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(code));
             if(pricingbook != null)
             {
                 foreach (ProductPrice productprice in GetProducts(code))
                 {
                     if(productprice.ProductCode.Equals(productcode)){
                        pricingbook.ProductsList.Remove(productprice);
-
+                       SaveChanges();
                     }
                     
                 } 
@@ -199,14 +175,14 @@ namespace CRM_PricingBooks.Database
 
         public List<ProductPrice> GetProducts(string id)
         {
-            var pricingbook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
             List<ProductPrice> products = new List<ProductPrice>();
             if(pricingbook != null)
             {
                 foreach (ProductPrice product in pricingbook.ProductsList)
                 {
                     products.Add(product);
-
+                    
                 }
             }
 
@@ -215,11 +191,11 @@ namespace CRM_PricingBooks.Database
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
         {
 
-            PricingBook pricingBook = PricingBooks.FirstOrDefault(d => d.Id.Equals(id));
+            PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
             if (pricingBook != null)
             {
                 pricingBook.ProductsList = ppToUpdate;
-  
+                SaveChanges();
             }
 
             return pricingBook;

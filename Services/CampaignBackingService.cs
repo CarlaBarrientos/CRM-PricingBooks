@@ -16,7 +16,7 @@ namespace Services
         {
             _configuration = configuration;
         }
-        public async Task<List<CampaignBSDTO>> GetAllCampaign()
+        public async Task<List<CampaignBSDTO>> GetAllCampaigns()
         {
             try
             {
