@@ -14,13 +14,16 @@ using Microsoft.Extensions.Logging;
 using CRM_PricingBooks.BusinessLogic;
 using CRM_PricingBooks.Database;
 using Services;
-using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
+using CRM_PricingBooks.Middlewares;
 
 namespace CRM_PricingBooks
 {
     public class Startup
     {
         const string SWAGGER_SECTION_SETTING_KEY = "SwaggerSettings";
+        const string SWAGGER_SECTION_LOGGING_KEY = "Logging";
         const string SWAGGER_SECTION_SETTING_TITLE_KEY = "Title";
         const string SWAGGER_SECTION_SETTING_VERSION_KEY = "Version";
 
@@ -31,7 +34,17 @@ namespace CRM_PricingBooks
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json")
                 .AddEnvironmentVariables();
 
-            Configuration = builder.Build();
+            Configuration = builder.Build(); 
+            
+            string logpath = Configuration.GetSection(SWAGGER_SECTION_LOGGING_KEY).GetSection("FileLocation").Value;
+            Log.Logger = new LoggerConfiguration()
+               .MinimumLevel
+               .Information()
+               .WriteTo.Console()
+               .WriteTo.RollingFile(logpath, LogEventLevel.Information)
+               .CreateLogger();
+            Log.Information("This app is using the config file: " + $"appsettings.{env.EnvironmentName}.json");
+
         }
 
         public IConfiguration Configuration { get; }
@@ -87,11 +100,18 @@ namespace CRM_PricingBooks
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseHttpsRedirection();
+            //app.UseExceptionHandlerMiddleware(); //will implement
+
+            // app.UseHsts();  //will not use
+            //app.UseHttpsRedirection();  //will not use probably
 
             app.UseRouting();
 
+            app.UseCors("AllowAll");
+
             app.UseAuthorization();
+
+            //app.UseAuthenticationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

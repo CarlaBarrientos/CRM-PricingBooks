@@ -29,9 +29,10 @@ namespace CRM_PricingBooks.Database
         }
         public void InitDBContext()
         {
+            //there should be a try catch here, as it could fail getting the path or lose contact with it
             _dbPath = _configuration.GetSection("Database").GetSection("connectionString").Value;
-            //Log.Logger.Information("test");
             _dbContainer = JsonConvert.DeserializeObject<DBContext>(File.ReadAllText(_dbPath));
+            Log.Logger.Information("Connection to Database succesful");
             _pricingBookList = _dbContainer.PricingBooks;
         }
 
@@ -44,14 +45,18 @@ namespace CRM_PricingBooks.Database
 
         public PricingBook AddNew(PricingBook newPricingBook)
         {
+            //add try catch then log for failure
             _pricingBookList.Add(newPricingBook);
             SaveChanges();
+            Log.Logger.Information("Added new PricingBook: "+ newPricingBook.Id + " succesfully");
             return newPricingBook;
         }
 
         public PricingBook Update(PricingBook pricingbookToUpdate, string id)
         {
+            //add try catch then log for failure
             PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
+            
             //verifying wich fields have to be updated
             if (pricingBook != null)
             {
@@ -83,16 +88,35 @@ namespace CRM_PricingBooks.Database
             }
            
             SaveChanges();
+            Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully");
             return pricingbookToUpdate;
         }
         public void Delete(string id)
         {
-            foreach(PricingBook pb in _pricingBookList)
+            //add try catch, then log for failure
+            //Possible new method, erase if not agreed
+            /* PricingBook pricingBookToDelete = _pricingBookList.Find
+            (
+                pricingBook => pricingBook.Id == id
+            );
+            if (string.IsNullOrEmpty(pricingBookToDelete.Id))
+            {
+                Log.Logger.Information("PricingBook with id: " + id + " is non existent, no changes done");
+            }
+            else
+            {
+                _pricingBookList.Remove(pricingBookToDelete);
+                SaveChanges();
+                Log.Logger.Information("PricingBook with id: " + id + " was deleted succesfully");
+            }
+           */
+            foreach (PricingBook pb in _pricingBookList)
             {
                 if (pb.Id.Equals(id))
                 {
                     _pricingBookList.Remove(pb);
                     SaveChanges();
+                    Log.Logger.Information("PricingBook with id: " + id + " was deleted succesfully");
                     break;
                 }
             }
@@ -106,6 +130,7 @@ namespace CRM_PricingBooks.Database
                 {
                     pb.Status = true;
                     SaveChanges();
+                    Log.Logger.Information("PricingBook with id: " + id + " was activated succesfully");
                     break;
                 }
             }
@@ -113,13 +138,13 @@ namespace CRM_PricingBooks.Database
 
         public void DeActivate(string id)
         {
-
             foreach (PricingBook pb in _pricingBookList)
             {
                 if (pb.Id.Equals(id))
                 {
                     pb.Status = false;
                     SaveChanges();
+                    Log.Logger.Information("PricingBook with id: " + id + " was deactivated succesfully");
                     break;
                 }
             }
@@ -139,9 +164,10 @@ namespace CRM_PricingBooks.Database
                 foreach(ProductPrice product in newProduct)
                 {
                     pricingBook.ProductsList.Add(product);
-                    
+                    Log.Logger.Information("New Product was added on PricingBook with ProductCode: " + product.ProductCode);
                 }
                 SaveChanges();
+                Log.Logger.Information("Product List was added on PricingBook with id: " + id + " succesfully");
             }
             
             return pricingBook;
@@ -155,8 +181,9 @@ namespace CRM_PricingBooks.Database
                 {
                     pricingbook.ProductsList.Remove(productprice);
                     SaveChanges();
-                } 
-            
+                }
+            Log.Logger.Information("Product with code: "+ code + " was deleted succesfully");
+
         }
         public void DeleteProductCode(string code,string productcode)
         {
@@ -168,9 +195,10 @@ namespace CRM_PricingBooks.Database
                     if(productprice.ProductCode.Equals(productcode)){
                        pricingbook.ProductsList.Remove(productprice);
                        SaveChanges();
+                        Log.Logger.Information("Product from PricingBook.code: " + code + " and product code: " + productcode + " was deleted succesfully");
                     }
-                    
-                } 
+                }
+                Log.Logger.Information("Product with code: " + productcode + " was deleted succesfully from DB");
             }
         }
 
@@ -183,10 +211,9 @@ namespace CRM_PricingBooks.Database
                 foreach (ProductPrice product in pricingbook.ProductsList)
                 {
                     products.Add(product);
-                    
                 }
             }
-
+            Log.Logger.Information("GetProduct : " + id + " succesfull");
             return products;
         }
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
@@ -197,6 +224,11 @@ namespace CRM_PricingBooks.Database
             {
                 pricingBook.ProductsList = ppToUpdate;
                 SaveChanges();
+                Log.Logger.Information("PricingBook: " + id + " was updated succesfully");
+            }
+            else
+            {
+                Log.Logger.Information("PricingBook: " + id + " was not found, no update realized");
             }
 
             return pricingBook;

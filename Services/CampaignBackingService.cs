@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Services
 {
@@ -27,9 +28,6 @@ namespace Services
 
                 // Executing an ASYNC HTTP Method could be: Get, Post, Put, Delete
                 // In this case is a GET
-                // HttpContent content = new 
-                // HttpResponseMessage response = await productMS.GetAsync($"{msPath}/pricing-books/PricingBook-001");
-                // HttpResponseMessage response = await productMS.GetAsync($"{msPath}/campaigns/Campaigns-001");
                 HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns");
                 
                 int statusCode = (int)response.StatusCode;
@@ -52,8 +50,6 @@ namespace Services
             {
                 throw new BackingServiceException("Connection with Campaigns is not working: " + ex.Message);
             }
-
-
         }
     }
 }
