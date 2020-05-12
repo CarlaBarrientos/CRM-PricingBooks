@@ -51,6 +51,7 @@ TODO: Vincent Valenzuela, Carla Barrientos, Mateo Lopez, Melissa
 
 ## Tasks Part 2
 - Task_1: Add Campaigns as a backing service
+- Task_2: Add Database in a JSON file
 ## Usefull Data
 - Swagger runtime url: http://localhost:4405/swagger/index.html
 

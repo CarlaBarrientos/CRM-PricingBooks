@@ -41,7 +41,7 @@ namespace CRM_PricingBooks
             services.AddControllers();
 
             services.AddTransient<IPriceLogic,PriceLogic>();
-            services.AddSingleton<IPricingBookDB, PricingBookDB>();
+            services.AddSingleton<IPricingBookDBManager, PricingBookDBManager>();
 
             services.AddTransient<IProductLogic, ProductLogic>();
             services.AddTransient<ICampaignBackingService, CampaignBackingService>();
