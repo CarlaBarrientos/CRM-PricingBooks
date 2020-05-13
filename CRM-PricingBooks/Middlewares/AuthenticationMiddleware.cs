@@ -19,6 +19,8 @@ namespace CRM_PricingBooks.Middlewares
 
         public Task Invoke(HttpContext httpContext)
         {
+            //string var = HttpContext.Request.Headers["authorization"].ToString();
+            // var = "mateo.lopez : Pass123";
             Console.WriteLine("This is the Auth Middleware");
             Console.WriteLine("Connecting with FB API (oAuth)"); // SSO, oAuth2.0/3.0
             // Consult to busines logic
@@ -28,6 +30,7 @@ namespace CRM_PricingBooks.Middlewares
             // HTTP Header / Authorization: Basic base64(user:pass)
             Console.WriteLine("GRANTING ACCESS TO THE SYSTEM");
             // GRANT Acess
+            //if(loginbusinesslogic.validateuser(var)){}
             return _next(httpContext);
         }
     }
