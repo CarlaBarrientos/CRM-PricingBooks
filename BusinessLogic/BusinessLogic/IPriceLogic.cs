@@ -18,5 +18,6 @@ namespace CRM_PricingBooks.BusinessLogic
         string ActivateList(string id);
         string DeActivateList(string id);
         bool DeleteListProduct(string id);
+        PricingBookDTO GetActivePricingBook();
     }
 }

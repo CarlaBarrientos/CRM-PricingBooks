@@ -30,6 +30,13 @@ namespace CRM_PricingBooks.Controllers
             return _priceLogic.GetPricingBooks();
         }
 
+        [HttpGet]
+        [Route("pricing-books/active")]
+        public PricingBookDTO GetActivePricingBook()
+        {
+            return _priceLogic.GetActivePricingBook();
+        }
+
         [HttpPost]
         [Route("pricing-books")]
         public PricingBookDTO Post([FromBody]PricingBookDTO newPriceBookDTO)

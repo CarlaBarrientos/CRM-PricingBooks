@@ -7,6 +7,6 @@ namespace Services
 {
     public interface ICampaignBackingService
     {
-        public Task<List<CampaignBSDTO>> GetAllCampaigns();
+        public Task<CampaignBSDTO> GetActiveCampaign();
     }
 }
