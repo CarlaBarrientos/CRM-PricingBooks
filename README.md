@@ -52,6 +52,9 @@ TODO: Vincent Valenzuela, Carla Barrientos, Mateo Lopez, Melissa
 ## Tasks Part 2
 - Task_1: Add Campaigns as a backing service
 - Task_2: Add Database in a JSON file
+- Task_3: Add error handling and loggin
+- Task_4: Add return active prising book and update to read active campaign
+- Task_5: Add error handling in Database
 ## Usefull Data
 - Swagger runtime url: http://localhost:4405/swagger/index.html
 

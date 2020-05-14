@@ -30,11 +30,17 @@ namespace CRM_PricingBooks.Database
         }
         public void InitDBContext()
         {
-            //there should be a try catch here, as it could fail getting the path or lose contact with it
-            _dbPath = _configuration.GetSection("Database").GetSection("connectionString").Value;
-            _dbContainer = JsonConvert.DeserializeObject<DBContext>(File.ReadAllText(_dbPath));
-            Log.Logger.Information("Connection to Database succesful");
-            _pricingBookList = _dbContainer.PricingBooks;
+            try
+            {
+                _dbPath = _configuration.GetSection("Database").GetSection("connectionString").Value;
+                _dbContainer = JsonConvert.DeserializeObject<DBContext>(File.ReadAllText(_dbPath));
+                Log.Logger.Information("Connection to a Database with path: "+_dbPath +" was succesful.");
+                _pricingBookList = _dbContainer.PricingBooks;
+            }
+            catch (Exception) {
+                Log.Logger.Error("Connection to Database with path: " + _dbPath+ " is not working");
+                throw new DatabaseException("Connection to Database is not working");
+            }
         }
 
         public void SaveChanges()
@@ -46,156 +52,163 @@ namespace CRM_PricingBooks.Database
 
         public PricingBook AddNew(PricingBook newPricingBook)
         {
-            try { 
+            try
+            {
                 _pricingBookList.Add(newPricingBook);
                 SaveChanges();
-                Log.Logger.Information("Added new PricingBook: "+ newPricingBook.Id + " succesfully");
+                Log.Logger.Information("Added new PricingBook: " + newPricingBook.Id + " succesfully");
                 return newPricingBook;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Log.Logger.Error("List Pricing Book failed to be added");
+                Log.Logger.Error("Error while adding " + newPricingBook.Id + " to Database. " );
                 throw new BackingServiceException("Error while adding new ListPricingBook, " + ex.Message);
+                throw new DatabaseException("Error while adding a new Pricing Book to Database.");
             }
+
         }
 
         public PricingBook Update(PricingBook pricingbookToUpdate, string id)
         {
-            try { 
+            try
+            {
                 PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
-            
+
                 //verifying wich fields have to be updated
-                if (pricingBook != null)
+                 if (pricingBook != null)
+              {
+                pricingbookToUpdate.Id = id;
+
+                if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
                 {
-                        pricingbookToUpdate.Id = id;
-                
-                    if(string.IsNullOrEmpty(pricingbookToUpdate.Name))
-                    {
-                        pricingbookToUpdate.Name = pricingBook.Name;
-                    }else
-                    {
-                        pricingBook.Name = pricingbookToUpdate.Name;
-                    }
-                    if(string.IsNullOrEmpty(pricingbookToUpdate.Description))
-                    {
-                        pricingbookToUpdate.Description = pricingBook.Description;
-                    }else
-                    {
-                        pricingBook.Description = pricingbookToUpdate.Description;
-                    }
-                    pricingbookToUpdate.Status = pricingBook.Status;
-                    if(pricingbookToUpdate.ProductsList.Count() != 0)
-                    {
-                        pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
-                        {
+                    pricingbookToUpdate.Name = pricingBook.Name;
+                }
+                else
+                {
+                    pricingBook.Name = pricingbookToUpdate.Name;
+                }
+                if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
+                {
+                    pricingbookToUpdate.Description = pricingBook.Description;
+                }
+                else
+                {
+                    pricingBook.Description = pricingbookToUpdate.Description;
+                }
+                pricingbookToUpdate.Status = pricingBook.Status;
+                if (pricingbookToUpdate.ProductsList.Count() != 0)
+                {
+                    pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                   {
                             ProductCode = product.ProductCode,
                             FixedPrice = product.FixedPrice
                         });
                     }
                 }
-           
+              }
+
                 SaveChanges();
-                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully");
+                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
                 return pricingbookToUpdate;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("List with id: " + id + " failed to update");
+                Log.Logger.Error("Error while updating " + pricingbookToUpdate.Id  +"  to Database. ");
                 throw new BackingServiceException("Error while updating listproduct, " + ex.Message);
+                throw new DatabaseException("Error while updating a Pricing Book to Database.");
             }
         }
         public void Delete(string id)
         {
             try
             {
-                //Possible new method, erase if not agreed
-                /* PricingBook pricingBookToDelete = _pricingBookList.Find
-                (
-                    pricingBook => pricingBook.Id == id
-                );
-                if (string.IsNullOrEmpty(pricingBookToDelete.Id))
-                {
-                    Log.Logger.Information("PricingBook with id: " + id + " is non existent, no changes done");
-                }
-                else
-                {
-                    _pricingBookList.Remove(pricingBookToDelete);
-                    SaveChanges();
-                    Log.Logger.Information("PricingBook with id: " + id + " was deleted succesfully");
-                }
-               */
                 foreach (PricingBook pb in _pricingBookList)
                 {
                     if (pb.Id.Equals(id))
                     {
                         _pricingBookList.Remove(pb);
                         SaveChanges();
-                        Log.Logger.Information("PricingBook with id: " + id + " was deleted succesfully");
+                        Log.Logger.Information("PricingBook with id: " + id + " was deleted succesfully.");
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Error while deleting List products: " + ex.Message);
+                Log.Logger.Error("Error while deleting the PricingBook with id: " + id + "  in Database.");
                 throw new BackingServiceException("Error while deleting ListProduct, " + ex.Message);
+                throw new DatabaseException("Error while deleting a Pricing Book to Database.");
             }
+
         }
         public void Activate(string id)
         {
-            try { 
+            try
+            {
                 foreach (PricingBook pb in _pricingBookList)
                 {
                     if (pb.Id.Equals(id))
                     {
                         pb.Status = true;
                         SaveChanges();
-                        Log.Logger.Information("PricingBook with id: " + id + " was activated succesfully");
+                        Log.Logger.Information("PricingBook with id: " + id + " was activated succesfully.");
                         break;
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception es)
             {
-                Log.Logger.Error("List with id: " + id + " failed to activate");
+                Log.Logger.Error("Error while activating PricingBook with id: " + id+ "  in Database.");
                 throw new BackingServiceException("Error while activating list, " + ex.Message);
+                throw new DatabaseException("Error while activating a Pricing Book to Database." );
             }
         }
 
         public void DeActivate(string id)
         {
-            try { 
+            try
+            {
                 foreach (PricingBook pb in _pricingBookList)
                 {
                     if (pb.Id.Equals(id))
                     {
                         pb.Status = false;
                         SaveChanges();
-                        Log.Logger.Information("PricingBook with id: " + id + " was deactivated succesfully");
+                        Log.Logger.Information("PricingBook with id: " + id + " was deactivated succesfully.");
                         break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("List with id: " + id + " failed to deactivate");
+                Log.Logger.Error("Error while deactivating PricingBook with id: " + id + "  in Database.");
                 throw new BackingServiceException("Error while trying to deactivateList, " + ex.Message);
+                throw new DatabaseException("Error while deactivating a Pricing Book to Database.");
             }
         }
 
         public List<PricingBook> GetAll()
         {
-            return _pricingBookList;
+            try
+            {
+                return _pricingBookList;
+            }
+            catch (Exception )
+            {
+                Log.Logger.Error("Error while getting all PricingBooks from Database." );
+                throw new DatabaseException("Error while while getting all PricingBook from Database." );
+            }
         }
 
         //***************************CRUD PRODUCTS*************************
         public PricingBook AddNewProduct(List<ProductPrice> newProduct, string id)
         {
-            try { 
+            try
+            {
                 PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
-                if(pricingBook != null)
+                if (pricingBook != null)
                 {
-                    foreach(ProductPrice product in newProduct)
+                    foreach (ProductPrice product in newProduct)
                     {
                         pricingBook.ProductsList.Add(product);
                         Log.Logger.Information("New Product was added on PricingBook with ProductCode: " + product.ProductCode);
@@ -203,45 +216,51 @@ namespace CRM_PricingBooks.Database
                     SaveChanges();
                     Log.Logger.Information("Product List was added on PricingBook with id: " + id + " succesfully");
                 }
-            
+
                 return pricingBook;
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Failed to Add List product with id: " + id);
+                Log.Logger.Error("Error while adding a new product in the:  " + id + "  in Database.");
                 throw new BackingServiceException("Error while adding the newproduct" + ex.Message);
+                throw new DatabaseException("Error while deactivating a Pricing Book in Database." );
             }
         }
         
         public void DeleteProduct(string code)
         {
-            try { 
+            try
+            {
                 PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(code));
-                    foreach (ProductPrice productprice in GetProducts(code))
-                    {
-                        pricingbook.ProductsList.Remove(productprice);
-                        SaveChanges();
-                    }
-                Log.Logger.Information("Product with code: "+ code + " was deleted succesfully");
+
+                foreach (ProductPrice productprice in GetProducts(code))
+                {
+                    pricingbook.ProductsList.Remove(productprice);
+                    SaveChanges();
+                }
+                Log.Logger.Information("Product with code: " + code + " was deleted succesfully");
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Failed to Delete product by id with code: " + code);
+                Log.Logger.Error("Error while deleting a Product list with code:  " + code + "  in Database.");
                 throw new BackingServiceException("error while deleting product" + ex.Message);
+                throw new DatabaseException("Error while deleting a Product list in Database. ");
             }
         }
         public void DeleteProductCode(string code,string productcode)
         {
-            try { 
+            try
+            {
                 PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(code));
-                if(pricingbook != null)
+                if (pricingbook != null)
                 {
                     foreach (ProductPrice productprice in GetProducts(code))
                     {
-                        if(productprice.ProductCode.Equals(productcode)){
-                           pricingbook.ProductsList.Remove(productprice);
-                           SaveChanges();
-                           Log.Logger.Information("Product from PricingBook.code: " + code + " and product code: " + productcode + " was deleted succesfully");
+                        if (productprice.ProductCode.Equals(productcode))
+                        {
+                            pricingbook.ProductsList.Remove(productprice);
+                            SaveChanges();
+                            Log.Logger.Information("Product from PricingBook.code: " + code + " and product code: " + productcode + " was deleted succesfully");
                         }
                     }
                     Log.Logger.Information("Product with code: " + productcode + " was deleted succesfully from DB");
@@ -250,6 +269,7 @@ namespace CRM_PricingBooks.Database
             catch (Exception ex)
             {
                 Log.Logger.Error("Failed to Delete product by id with productcode: " + productcode);
+                throw new DatabaseException("Error while deleting a product in a Product List in Database." );
                 throw new BackingServiceException("error while updating product by id" + ex.Message);
             }
 
@@ -261,7 +281,7 @@ namespace CRM_PricingBooks.Database
             {
                 PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
                 List<ProductPrice> products = new List<ProductPrice>();
-                if(pricingbook != null)
+                if (pricingbook != null) 
                 {
                     foreach (ProductPrice product in pricingbook.ProductsList)
                     {
@@ -273,30 +293,34 @@ namespace CRM_PricingBooks.Database
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Failed to Get List products with id: " + id);
+                Log.Logger.Error("Error while getting all products from " + id + "  in Database.");
                 throw new BackingServiceException("Error while getting products" + ex.Message);
+                throw new DatabaseException("Error while getting all products from a PricingBook in Database. " );
             }
         }
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
         {
-            try { 
-            PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
-            if (pricingBook != null)
+            try
             {
-                pricingBook.ProductsList = ppToUpdate;
-                SaveChanges();
-                Log.Logger.Information("PricingBook: " + id + " was updated succesfully");
-            }
-            else
-            {
-                Log.Logger.Information("PricingBook: " + id + " was not found, no update realized");
-            }
+                PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
+                if (pricingBook != null)
+                {
+                    pricingBook.ProductsList = ppToUpdate;
+                    SaveChanges();
+                    Log.Logger.Information("PricingBook: " + id + " was updated succesfully with the new Product list");
+                }
+                else
+                {
+                    Log.Logger.Information("PricingBook: " + id + " was not found, no update realized");
+                }
+
 
             return pricingBook;
             }
             catch (Exception ex)
             {
                 Log.Logger.Error("Failed to Update product with id: " + id);
+                throw new DatabaseException("Error while updating the Product list from a PricingBook in Database.");
                 throw new BackingServiceException("error while updating product" + ex.Message);
             }
         }

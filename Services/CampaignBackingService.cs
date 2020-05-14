@@ -17,7 +17,7 @@ namespace Services
         {
             _configuration = configuration;
         }
-        public async Task<List<CampaignBSDTO>> GetAllCampaigns()
+        public async Task<CampaignBSDTO> GetActiveCampaign()
         {
             //try
             //{
@@ -28,7 +28,7 @@ namespace Services
 
                 // Executing an ASYNC HTTP Method could be: Get, Post, Put, Delete
                 // In this case is a GET
-                HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns");
+                HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns/active");
                 
                 int statusCode = (int)response.StatusCode;
                 Log.Logger.Error("http code recorded is: " + statusCode );
@@ -37,7 +37,7 @@ namespace Services
                     // Read ASYNC response from HTTPResponse 
                     String jsonResponse = await response.Content.ReadAsStringAsync();
                     // Deserialize response
-                    List<CampaignBSDTO> campaigns = JsonConvert.DeserializeObject<List<CampaignBSDTO>>(jsonResponse);
+                    CampaignBSDTO campaigns = JsonConvert.DeserializeObject<CampaignBSDTO>(jsonResponse);
                     Log.Logger.Information("Http client response succesful,");
 
                     return campaigns;

@@ -40,7 +40,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
             }
             
-            List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
+            CampaignBSDTO campaigns = campaign.GetActiveCampaign().Result;
             //Mapping PricingBook => PricingBookDTO
             foreach (PricingBook pricingBook in filteredListFalse)
             {
@@ -52,14 +52,34 @@ namespace CRM_PricingBooks.BusinessLogic
                     Status = pricingBook.Status,
                     ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
                     {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice,
-                        PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
-                    })
-                });
+                            ProductCode = product.ProductCode,
+                            FixedPrice = product.FixedPrice,
+                            PromotionPrice = calculatediscount(product.FixedPrice.ToString(), product.FixedPrice)
+                        })
+                    });
 
+                }           
+
+                return pricesLists;
+            }
+            catch (Exception )
+            {
+                throw new BackingServiceException("Error while getting PricingBooks: ");
             }
             return pricesLists;
+        }
+
+        public PricingBookDTO GetActivePricingBook()
+        {
+           List<PricingBookDTO> pricingbooks =  GetPricingBooks();
+            foreach(PricingBookDTO active in pricingbooks)
+            {
+                if (active.Status == true)
+                {
+                    return active;
+                }
+            }
+            return null;
         }
         
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
@@ -67,7 +87,7 @@ namespace CRM_PricingBooks.BusinessLogic
             //Here i recover the active campaign to calculate the discounts
 
             
-            List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
+           
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),
@@ -78,7 +98,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
-                    PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
+                    PromotionPrice = calculatediscount(campaign.GetActiveCampaign().Result.Type, product.FixedPrice)
                 })
             });
         }
@@ -94,7 +114,6 @@ namespace CRM_PricingBooks.BusinessLogic
                     _productTableDB.Delete(id);
                     return true;
                 }
-
             }
             return false;
         }
