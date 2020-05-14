@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
 using Database.Database.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Serilog;
+using Services.Exceptions;
 
 namespace CRM_PricingBooks.Database
 {
@@ -22,9 +24,10 @@ namespace CRM_PricingBooks.Database
         public readonly ILogger<PricingBookDBManager> _logger;
 
 
-        public PricingBookDBManager(IConfiguration config)
+        public PricingBookDBManager(IConfiguration config, ILogger<PricingBookDBManager> logger)
         {
             _configuration = config;
+            _logger = logger;
             InitDBContext();
         }
         public void InitDBContext()
@@ -58,10 +61,11 @@ namespace CRM_PricingBooks.Database
                 Log.Logger.Information("Added new PricingBook: " + newPricingBook.Id + " succesfully");
                 return newPricingBook;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 Log.Logger.Error("Error while adding " + newPricingBook.Id + " to Database. " );
-                throw new DatabaseException("Error while adding a new Pricing Book to Database.");
+                throw new BackingServiceException("Error while adding new ListPricingBook, " + ex.Message);
+                //throw new DatabaseException("Error while adding a new Pricing Book to Database.");
             }
 
         }
@@ -78,6 +82,7 @@ namespace CRM_PricingBooks.Database
                     pricingbookToUpdate.Id = id;
 
                     if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
+<<<<<<< HEAD
                     {
                         pricingbookToUpdate.Name = pricingBook.Name;
                     }
@@ -87,6 +92,17 @@ namespace CRM_PricingBooks.Database
                     }
                     if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
                     {
+=======
+                    {
+                        pricingbookToUpdate.Name = pricingBook.Name;
+                    }
+                    else
+                    {
+                        pricingBook.Name = pricingbookToUpdate.Name;
+                    }
+                    if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
+                    {
+>>>>>>> 9a520414443d64221d77052c2e39ce6d43f36ca3
                         pricingbookToUpdate.Description = pricingBook.Description;
                     }
                     else
@@ -97,6 +113,7 @@ namespace CRM_PricingBooks.Database
                     if (pricingbookToUpdate.ProductsList.Count() != 0)
                     {
                         pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+<<<<<<< HEAD
                         {
                             ProductCode = product.ProductCode,
                             FixedPrice = product.FixedPrice
@@ -111,13 +128,26 @@ namespace CRM_PricingBooks.Database
                 Log.Logger.Error("The " + id + " does not exist in Database. ");
                   throw new DatabaseException("The Pricing Book does not exist in Database.");
                
+=======
+                       {
+                                ProductCode = product.ProductCode,
+                                FixedPrice = product.FixedPrice
+                            });
+                    }
+                }
+                SaveChanges();
+                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
+                return pricingbookToUpdate;
+>>>>>>> 9a520414443d64221d77052c2e39ce6d43f36ca3
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while updating " + pricingbookToUpdate.Id  +"  to Database. ");
-                throw new DatabaseException("Error while updating a Pricing Book to Database.");
+                throw new BackingServiceException("Error while updating listproduct, " + ex.Message);
+               // throw new DatabaseException("Error while updating a Pricing Book to Database.");
             }
         }
+
         public void Delete(string id)
         {
             try
@@ -133,10 +163,11 @@ namespace CRM_PricingBooks.Database
                     }
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while deleting the PricingBook with id: " + id + "  in Database.");
-                throw new DatabaseException("Error while deleting a Pricing Book to Database.");
+                throw new BackingServiceException("Error while deleting ListProduct, " + ex.Message);
+               // throw new DatabaseException("Error while deleting a Pricing Book to Database.");
             }
 
         }
@@ -155,10 +186,11 @@ namespace CRM_PricingBooks.Database
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while activating PricingBook with id: " + id+ "  in Database.");
-                throw new DatabaseException("Error while activating a Pricing Book to Database." );
+                throw new BackingServiceException("Error while activating list, " + ex.Message);
+               // throw new DatabaseException("Error while activating a Pricing Book to Database." );
             }
         }
 
@@ -177,10 +209,11 @@ namespace CRM_PricingBooks.Database
                     }
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while deactivating PricingBook with id: " + id + "  in Database.");
-                throw new DatabaseException("Error while deactivating a Pricing Book to Database.");
+                throw new BackingServiceException("Error while trying to deactivateList, " + ex.Message);
+               // throw new DatabaseException("Error while deactivating a Pricing Book to Database.");
             }
         }
 
@@ -217,10 +250,11 @@ namespace CRM_PricingBooks.Database
                 Log.Logger.Error("The " + id + " does not exist in Database. ");
                 throw new DatabaseException("The Pricing Book does not exist in Database.");
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while adding a new product in the:  " + id + "  in Database.");
-                throw new DatabaseException("Error while deactivating a Pricing Book in Database." );
+                throw new BackingServiceException("Error while adding the newproduct" + ex.Message);
+                //throw new DatabaseException("Error while deactivating a Pricing Book in Database." );
             }
         }
         
@@ -244,10 +278,11 @@ namespace CRM_PricingBooks.Database
                     throw new DatabaseException("The Pricing Book does not exist in Database.");
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while deleting a Product list with code:  " + code + "  in Database.");
-                throw new DatabaseException("Error while deleting a Product list in Database. ");
+                throw new BackingServiceException("error while deleting product" + ex.Message);
+                //throw new DatabaseException("Error while deleting a Product list in Database. ");
             }
         }
         public void DeleteProductCode(string code,string productcode)
@@ -274,11 +309,13 @@ namespace CRM_PricingBooks.Database
                     throw new DatabaseException("The Pricing Book does not exist in Database.");
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
-                Log.Logger.Error("Error while deleting a product with code:  " + productcode + " in the Product list wih code: "+code+"  in Database.");
-                throw new DatabaseException("Error while deleting a product in a Product List in Database." );
+                Log.Logger.Error("Failed to Delete product by id with productcode: " + productcode);
+                //throw new DatabaseException("Error while deleting a product in a Product List in Database." );
+                throw new BackingServiceException("error while updating product by id" + ex.Message);
             }
+
         }
 
         public List<ProductPrice> GetProducts(string id)
@@ -300,10 +337,11 @@ namespace CRM_PricingBooks.Database
                 throw new DatabaseException("The Pricing Book does not exist in Database.");
 
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while getting all products from " + id + "  in Database.");
-                throw new DatabaseException("Error while getting all products from a PricingBook in Database. " );
+                throw new BackingServiceException("Error while getting products" + ex.Message);
+                //throw new DatabaseException("Error while getting all products from a PricingBook in Database. " );
             }
         }
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
@@ -318,13 +356,16 @@ namespace CRM_PricingBooks.Database
                     Log.Logger.Information("PricingBook: " + id + " was updated succesfully with the new Product list");
                     return pricingBook;
                 }
+
                 Log.Logger.Error("The " + id + " does not exist in Database. ");
                 throw new DatabaseException("The Pricing Book does not exist in Database.");
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.Logger.Error("Error while updating the Product list from " + id + " in Database.");
-                throw new DatabaseException("Error while updating the Product list from a PricingBook in Database.");
+                Log.Logger.Error("Failed to Update product with id: " + id);
+                //throw new DatabaseException("Error while updating the Product list from a PricingBook in Database.");
+                throw new BackingServiceException("error while updating product" + ex.Message);
             }
         }
     }

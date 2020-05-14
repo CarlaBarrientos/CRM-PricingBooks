@@ -31,23 +31,27 @@ namespace Services
                 HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns/active");
                 
                 int statusCode = (int)response.StatusCode;
+                Log.Logger.Information("http code recorded is: " + statusCode );
                 if (statusCode == 200) // OK
                 {
                     // Read ASYNC response from HTTPResponse 
                     String jsonResponse = await response.Content.ReadAsStringAsync();
                     // Deserialize response
                     CampaignBSDTO campaigns = JsonConvert.DeserializeObject<CampaignBSDTO>(jsonResponse);
+                    Log.Logger.Information("Http client response succesful,");
 
                     return campaigns;
                 }
                 else
                 {
                     // something wrong happens!
+                    Log.Logger.Error("Error, exception with http code" + statusCode + " was detected");
                     throw new BackingServiceException("BS throws the error: " + statusCode);
                 }
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Error, exception "+ex.Message + " was detected");
                 throw new BackingServiceException("Connection with Campaigns is not working: " + ex.Message);
             }
         }

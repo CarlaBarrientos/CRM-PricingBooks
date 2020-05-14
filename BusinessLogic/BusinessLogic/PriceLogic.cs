@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Services.Exceptions;
 using Services;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
 using BusinessLogic.DTOModels;
-using Services.Exceptions;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
@@ -26,33 +25,31 @@ namespace CRM_PricingBooks.BusinessLogic
         }
        
         public List<PricingBookDTO> GetPricingBooks() { //Reads all Pricing Books, also updates their price based on the active campaign.
-            try
-            { 
-                List<PricingBook> allProducts = _productTableDB.GetAll();
-                List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
-                List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();//filtering deactivate lists
-                List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
-
-                if(filteredListTrue.Count > 0 && pricesLists.Count == 0)
+                
+            List<PricingBook> allProducts = _productTableDB.GetAll();
+            List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
+            List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();//filtering deactivate lists
+            List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
+            if (filteredListTrue.Count > 0 && pricesLists.Count == 0)
+            {
+                foreach (PricingBook pricingBook in filteredListTrue)
                 {
-                    foreach (PricingBook pricingBook in filteredListTrue)
-                    {
-                        fillPriceList(pricesLists, pricingBook);//filling active price list calculating discounts
-                    }
+                    fillPriceList(pricesLists, pricingBook);//filling active price list calculating discounts
                 }
+            }
             
-                CampaignBSDTO campaigns = campaign.GetActiveCampaign().Result;
-                //Mapping PricingBook => PricingBookDTO
-                foreach (PricingBook pricingBook in filteredListFalse)
+            CampaignBSDTO campaigns = campaign.GetActiveCampaign().Result;
+            //Mapping PricingBook => PricingBookDTO
+            foreach (PricingBook pricingBook in filteredListFalse)
+            {
+                pricesLists.Add(new PricingBookDTO()
                 {
-                    pricesLists.Add(new PricingBookDTO()
+                    Id = pricingBook.Id.ToString(),
+                    Name = pricingBook.Name,
+                    Description = pricingBook.Description,
+                    Status = pricingBook.Status,
+                    ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
                     {
-                        Id = pricingBook.Id.ToString(),
-                        Name = pricingBook.Name,
-                        Description = pricingBook.Description,
-                        Status = pricingBook.Status,
-                        ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
-                        {
                             ProductCode = product.ProductCode,
                             FixedPrice = product.FixedPrice,
                             PromotionPrice = calculatediscount(product.FixedPrice.ToString(), product.FixedPrice)
@@ -60,13 +57,7 @@ namespace CRM_PricingBooks.BusinessLogic
                     });
 
                 }           
-
-                return pricesLists;
-            }
-            catch (Exception )
-            {
-                throw new BackingServiceException("Error while getting PricingBooks: ");
-            }
+            return pricesLists;
         }
 
         public PricingBookDTO GetActivePricingBook()
@@ -110,137 +101,102 @@ namespace CRM_PricingBooks.BusinessLogic
         
         public bool DeleteListProduct(string id)
         {
-            try { 
-                List<PricingBookDTO> priceslist = GetPricingBooks();
-                foreach (PricingBookDTO pbDTO in priceslist)
-                {
-                    if (pbDTO.Id.Equals(id))
-                    {
-                        priceslist.Remove(pbDTO);
-                        _productTableDB.Delete(id);
-                        return true;
-                    }
-
-                }
-                return false;
-            }
-            catch (Exception )
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+            foreach (PricingBookDTO pbDTO in priceslist)
             {
-                throw new BackingServiceException("Error while deleting ListProduct. " );
+                if (pbDTO.Id.Equals(id))
+                {
+                    priceslist.Remove(pbDTO);
+                    _productTableDB.Delete(id);
+                    return true;
+                }
             }
+            return false;
         }
         
         public string ActivateList(string id)
         {
-            try{
-                List<PricingBookDTO> priceslist = GetPricingBooks();
-                List<PricingBookDTO> filteredList = priceslist.Where(x => (x.Status == true)).ToList();
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+            List<PricingBookDTO> filteredList = priceslist.Where(x => (x.Status == true)).ToList();
 
-                string aux = "";
+            string aux = "";
 
-                if (filteredList.Count > 0)
-                {
-                    aux = "AN EXISTING LIST IS ALREADY ACTIVATED ";
-                    return aux + filteredList;
-                }
-                else
-                {
-                    foreach (PricingBookDTO pbDTO in priceslist)
-                    {
-                        if (pbDTO.Id.Equals(id))
-                        {
-                            pbDTO.Status = true;
-                            aux = "ACTIVATING LIST WITH ID " + id;
-                            _productTableDB.Activate(id);
-                            return aux;
-                        }
-                    }
-                    return aux;
-                }   
-            }
-            catch (Exception )
+            if (filteredList.Count > 0)
             {
-                throw new BackingServiceException("Error while activating list. ");
+                aux = "AN EXISTING LIST IS ALREADY ACTIVATED ";
+                return aux + filteredList;
             }
-        }
-        public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
-        {
-            try {
-                PricingBook pbUpdated = new PricingBook
-                {
-                    Id = id,
-                    Name = pricingBookToUpdate.Name,
-                    Description = pricingBookToUpdate.Description
-                };
-                if (pricingBookToUpdate.ProductPrices.Count() != 0)
-                    {
-                        pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
-                        {
-                            ProductCode = product.ProductCode,
-                            FixedPrice = product.FixedPrice
-                        });
-                    }
-
-                PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
-
-                return DTOUtil.MapPricingBookDatabase_To_DTO(pbInDB);
-            }
-            catch (Exception )
+            else
             {
-                throw new BackingServiceException("Error while updating listproduct. " );
-            }
-        }
-
-        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook)
-        {
-            try { 
-                PricingBook pricingBook = new PricingBook
-                {
-                    Name = newPricingBook.Name,
-                    Description = newPricingBook.Description,
-                    Id = SelfGenerationID(),
-                    Status = false,
-                    ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
-                    {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice
-                    })
-                };
-
-            
-                PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
-            
-                return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
-            }
-            catch (Exception )
-            {
-                throw new BackingServiceException("Error while adding new ListPricingBook.  ");
-    }
-}
-
-        public string DeActivateList(string id)
-        {
-            try { 
-                List<PricingBookDTO> priceslist = GetPricingBooks();
-
-                string deactivationMessage = "";
-
                 foreach (PricingBookDTO pbDTO in priceslist)
                 {
                     if (pbDTO.Id.Equals(id))
                     {
-                        pbDTO.Status = false;
-                        deactivationMessage = "DEACTIVATING LIST WITH ID " + id;
-                        _productTableDB.DeActivate(id);
-                        return deactivationMessage;
+                        pbDTO.Status = true;
+                        aux = "ACTIVATING LIST WITH ID " + id;
+                        _productTableDB.Activate(id);
+                        return aux;
                     }
                 }
-                return deactivationMessage;
-            }
-            catch (Exception )
+                return aux;
+            }   
+        }
+        public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
+        {
+            PricingBook pbUpdated = new PricingBook
             {
-                throw new BackingServiceException("Error while trying to deactivateList. " );
+                Id = id,
+                Name = pricingBookToUpdate.Name,
+                Description = pricingBookToUpdate.Description
+            };
+            if (pricingBookToUpdate.ProductPrices.Count() != 0)
+                {
+                    pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
+                    {
+                        ProductCode = product.ProductCode,
+                        FixedPrice = product.FixedPrice
+                    });
+                }
+            PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pbInDB);
+        }
+
+        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook)
+        {
+            PricingBook pricingBook = new PricingBook
+            {
+                Name = newPricingBook.Name,
+                Description = newPricingBook.Description,
+                Id = SelfGenerationID(),
+                Status = false,
+                ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                })
+            };            
+            PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
+        }
+
+        public string DeActivateList(string id)
+        {
+            List<PricingBookDTO> priceslist = GetPricingBooks();
+
+            string deactivationMessage = "";
+
+            foreach (PricingBookDTO pbDTO in priceslist)
+            {
+                if (pbDTO.Id.Equals(id))
+                {
+                    pbDTO.Status = false;
+                    deactivationMessage = "DEACTIVATING LIST WITH ID " + id;
+                    _productTableDB.DeActivate(id);
+                    return deactivationMessage;
+                }
             }
+            return deactivationMessage;
+            
         }
 
         private string SelfGenerationID()

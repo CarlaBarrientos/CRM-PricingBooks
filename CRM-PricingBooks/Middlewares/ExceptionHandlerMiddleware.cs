@@ -7,6 +7,7 @@ using Services.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace CRM_PricingBooks.Middlewares
 {
@@ -38,19 +39,25 @@ namespace CRM_PricingBooks.Middlewares
         {
             int httpStatusCode;
             string messageToShow;
+
             if (ex is BackingServiceException) //There was an error in service conection
             {
                 httpStatusCode = (int)HttpStatusCode.ServiceUnavailable;
                 messageToShow = ex.Message;
             }
-            else if (ex is InvalidOperationException) //The request is wrongly used or asked for by a client
+            else if (ex is InvalidOperationException) //The requested object is in an inapropiate state
             {
-                httpStatusCode = (int)HttpStatusCode.UnsupportedMediaType;
+                httpStatusCode = (int)HttpStatusCode.NotAcceptable;
                 messageToShow = ex.Message;
             }
-            else if (ex is InvalidOperationException) //Variable needed for creating data was wrongly written by client
+            else if (ex is NotImplementedException) //There is no implemented method
             {
-                httpStatusCode = (int)HttpStatusCode.BadRequest;
+                httpStatusCode = (int)HttpStatusCode.NotImplemented;
+                messageToShow = ex.Message;
+            }
+            else if (ex is DivideByZeroException) //Tried n/0
+            {
+                httpStatusCode = (int)HttpStatusCode.PreconditionFailed;
                 messageToShow = ex.Message;
             }
             else
@@ -65,6 +72,7 @@ namespace CRM_PricingBooks.Middlewares
                 message = messageToShow
             };
 
+            Log.Logger.Error("Error detected " + httpStatusCode +": " + messageToShow);
             // httpContext.Response.StatusCode = httpStatusCode;
             return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(errorModel));
         }
