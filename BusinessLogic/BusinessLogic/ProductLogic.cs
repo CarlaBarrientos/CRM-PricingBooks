@@ -8,6 +8,7 @@ using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database.Models;
 using BusinessLogic.DTOModels;
 using Services.Exceptions;
+using Serilog;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
@@ -40,6 +41,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Failed to Add List product with id: " + id);
                 throw new BackingServiceException("Error while adding the newproduct" + ex.Message);
             }
         }
@@ -52,6 +54,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Failed to Get List products with id: " + id);
                 throw new BackingServiceException("Error while getting products" + ex.Message);
             }
         }
@@ -75,6 +78,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Failed to Update product with id: " + id);
                 throw new BackingServiceException("error while updating product" + ex.Message);
             }
         }
@@ -93,11 +97,13 @@ namespace CRM_PricingBooks.BusinessLogic
                     return aux;
                 }
                 aux = "PRICE LIST DOES NOT EXIST ";
+                Log.Logger.Information("Product with code: " + code+" do not exist");
        
                 return aux;
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Failed to Delete product by id with code: " + code);
                 throw new BackingServiceException("error while deleting product" + ex.Message);
             }
         }
@@ -114,14 +120,16 @@ namespace CRM_PricingBooks.BusinessLogic
                          aux = "PRICE LIST AND PRODUCTCODE EXIST, WILL BE REMOVED";
                         return aux;
                      }
-               
-                 }
-                 aux = "PRICE LIST AND PRODUCTCODE DO NOT EXIST ";
+
+                }
+                Log.Logger.Information("Product with productcode: " + productcode+" do not exist");
+                aux = "PRICE LIST AND PRODUCTCODE DO NOT EXIST ";
        
                  return aux;
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Failed to Delete product by id with productcode: " + productcode);
                 throw new BackingServiceException("error while updating product by id" + ex.Message);
             }
         }

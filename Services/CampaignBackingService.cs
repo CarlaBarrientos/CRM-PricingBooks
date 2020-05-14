@@ -37,17 +37,20 @@ namespace Services
                     String jsonResponse = await response.Content.ReadAsStringAsync();
                     // Deserialize response
                     List<CampaignBSDTO> campaigns = JsonConvert.DeserializeObject<List<CampaignBSDTO>>(jsonResponse);
+                    Log.Logger.Information("Http client response succesful,");
 
                     return campaigns;
                 }
                 else
                 {
                     // something wrong happens!
+                    Log.Logger.Information("Error, exception with http code" + statusCode + " was detected");
                     throw new BackingServiceException("BS throws the error: " + statusCode);
                 }
             }
             catch (Exception ex)
             {
+                Log.Logger.Information("Error, exception "+ex.Message + " was detected");
                 throw new BackingServiceException("Connection with Campaigns is not working: " + ex.Message);
             }
         }

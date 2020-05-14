@@ -8,6 +8,7 @@ using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
 using BusinessLogic.DTOModels;
 using Services.Exceptions;
+using Serilog;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
@@ -34,8 +35,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
                 List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();//filtering deactivate lists
                 List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
-
-                if(filteredListTrue.Count > 0 && pricesLists.Count == 0)
+                if (filteredListTrue.Count > 0 && pricesLists.Count == 0)
                 {
                     foreach (PricingBook pricingBook in filteredListTrue)
                     {
@@ -61,12 +61,12 @@ namespace CRM_PricingBooks.BusinessLogic
                         })
                     });
 
-                }           
-
+                }
                 return pricesLists;
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Error while getting PricingBooks: " + ex.Message);
                 throw new BackingServiceException("Error while getting PricingBooks: " + ex.Message);
             }
         }
@@ -106,10 +106,12 @@ namespace CRM_PricingBooks.BusinessLogic
                     }
 
                 }
+                Log.Logger.Information("PricingBook with id: " + id + "is not existent");
                 return false;
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("Error while deleting List products: " + ex.Message);
                 throw new BackingServiceException("Error while deleting ListProduct, " + ex.Message);
             }
         }
@@ -125,6 +127,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 if (filteredList.Count > 0)
                 {
                     aux = "AN EXISTING LIST IS ALREADY ACTIVATED ";
+                    Log.Logger.Information("List with id: " + id + " is already active");
                     return aux + filteredList;
                 }
                 else
@@ -136,6 +139,7 @@ namespace CRM_PricingBooks.BusinessLogic
                             pbDTO.Status = true;
                             aux = "ACTIVATING LIST WITH ID " + id;
                             _productTableDB.Activate(id);
+                            Log.Logger.Information("List with id: " + id + " was activated succesfully");
                             return aux;
                         }
                     }
@@ -144,6 +148,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("List with id: " + id + " failed to activate");
                 throw new BackingServiceException("Error while activating list, " + ex.Message);
             }
         }
@@ -166,11 +171,11 @@ namespace CRM_PricingBooks.BusinessLogic
                     }
 
                 PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
-
                 return DTOUtil.MapPricingBookDatabase_To_DTO(pbInDB);
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("List with id: " + id + " failed to update");
                 throw new BackingServiceException("Error while updating listproduct, " + ex.Message);
             }
         }
@@ -189,18 +194,17 @@ namespace CRM_PricingBooks.BusinessLogic
                         ProductCode = product.ProductCode,
                         FixedPrice = product.FixedPrice
                     })
-                };
-
-            
+                };            
                 PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
-            
+
                 return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("List Pricing Book failed to be added");
                 throw new BackingServiceException("Error while adding new ListPricingBook, " + ex.Message);
-    }
-}
+            }
+        }
 
         public string DeActivateList(string id)
         {
@@ -223,6 +227,7 @@ namespace CRM_PricingBooks.BusinessLogic
             }
             catch (Exception ex)
             {
+                Log.Logger.Error("List with id: " + id + " failed to deactivate");
                 throw new BackingServiceException("Error while trying to deactivateList, " + ex.Message);
             }
         }
