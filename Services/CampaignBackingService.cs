@@ -12,7 +12,7 @@ namespace Services
 {
     public class CampaignBackingService : ICampaignBackingService
     {
-        private readonly IConfiguration _configuration;CampaignBackingService
+        private readonly IConfiguration _configuration;
         public CampaignBackingService(IConfiguration configuration)
         {
             _configuration = configuration;

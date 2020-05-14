@@ -65,7 +65,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while adding " + newPricingBook.Id + " to Database. " );
                 throw new BackingServiceException("Error while adding new ListPricingBook, " + ex.Message);
-                throw new DatabaseException("Error while adding a new Pricing Book to Database.");
+                //throw new DatabaseException("Error while adding a new Pricing Book to Database.");
             }
 
         }
@@ -115,7 +115,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while updating " + pricingbookToUpdate.Id  +"  to Database. ");
                 throw new BackingServiceException("Error while updating listproduct, " + ex.Message);
-                throw new DatabaseException("Error while updating a Pricing Book to Database.");
+               // throw new DatabaseException("Error while updating a Pricing Book to Database.");
             }
         }
 
@@ -138,7 +138,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while deleting the PricingBook with id: " + id + "  in Database.");
                 throw new BackingServiceException("Error while deleting ListProduct, " + ex.Message);
-                throw new DatabaseException("Error while deleting a Pricing Book to Database.");
+               // throw new DatabaseException("Error while deleting a Pricing Book to Database.");
             }
 
         }
@@ -161,7 +161,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while activating PricingBook with id: " + id+ "  in Database.");
                 throw new BackingServiceException("Error while activating list, " + ex.Message);
-                throw new DatabaseException("Error while activating a Pricing Book to Database." );
+               // throw new DatabaseException("Error while activating a Pricing Book to Database." );
             }
         }
 
@@ -184,7 +184,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while deactivating PricingBook with id: " + id + "  in Database.");
                 throw new BackingServiceException("Error while trying to deactivateList, " + ex.Message);
-                throw new DatabaseException("Error while deactivating a Pricing Book to Database.");
+               // throw new DatabaseException("Error while deactivating a Pricing Book to Database.");
             }
         }
 
@@ -224,7 +224,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while adding a new product in the:  " + id + "  in Database.");
                 throw new BackingServiceException("Error while adding the newproduct" + ex.Message);
-                throw new DatabaseException("Error while deactivating a Pricing Book in Database." );
+                //throw new DatabaseException("Error while deactivating a Pricing Book in Database." );
             }
         }
         
@@ -245,7 +245,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while deleting a Product list with code:  " + code + "  in Database.");
                 throw new BackingServiceException("error while deleting product" + ex.Message);
-                throw new DatabaseException("Error while deleting a Product list in Database. ");
+                //throw new DatabaseException("Error while deleting a Product list in Database. ");
             }
         }
         public void DeleteProductCode(string code,string productcode)
@@ -270,7 +270,7 @@ namespace CRM_PricingBooks.Database
             catch (Exception ex)
             {
                 Log.Logger.Error("Failed to Delete product by id with productcode: " + productcode);
-                throw new DatabaseException("Error while deleting a product in a Product List in Database." );
+                //throw new DatabaseException("Error while deleting a product in a Product List in Database." );
                 throw new BackingServiceException("error while updating product by id" + ex.Message);
             }
 
@@ -296,7 +296,7 @@ namespace CRM_PricingBooks.Database
             {
                 Log.Logger.Error("Error while getting all products from " + id + "  in Database.");
                 throw new BackingServiceException("Error while getting products" + ex.Message);
-                throw new DatabaseException("Error while getting all products from a PricingBook in Database. " );
+                //throw new DatabaseException("Error while getting all products from a PricingBook in Database. " );
             }
         }
         public PricingBook UpdateProduct(List <ProductPrice> ppToUpdate, string id)
@@ -321,7 +321,7 @@ namespace CRM_PricingBooks.Database
             catch (Exception ex)
             {
                 Log.Logger.Error("Failed to Update product with id: " + id);
-                throw new DatabaseException("Error while updating the Product list from a PricingBook in Database.");
+                //throw new DatabaseException("Error while updating the Product list from a PricingBook in Database.");
                 throw new BackingServiceException("error while updating product" + ex.Message);
             }
         }
