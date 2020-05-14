@@ -16,7 +16,7 @@ namespace CRM_PricingBooks.Controllers
 
     public class PricingBookController : ControllerBase
     {
-        private readonly IPriceLogic _priceLogic;
+        private IPriceLogic _priceLogic;
 
         public PricingBookController(IPriceLogic pricelogic)
         {
@@ -28,6 +28,13 @@ namespace CRM_PricingBooks.Controllers
         public IEnumerable<PricingBookDTO> GetAll()
         {
             return _priceLogic.GetPricingBooks();
+        }
+
+        [HttpGet]
+        [Route("pricing-books/active")]
+        public PricingBookDTO GetActivePricingBook()
+        {
+            return _priceLogic.GetActivePricingBook();
         }
 
         [HttpPost]

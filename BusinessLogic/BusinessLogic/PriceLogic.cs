@@ -1,41 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
+using Services.Exceptions;
+using Services;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
-
+using BusinessLogic.DTOModels;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
     public class PriceLogic : IPriceLogic
     {
         private int code = 0;
-        private readonly IPricingBookDB _productTableDB;
-
-        public PriceLogic(IPricingBookDB productTableDB)
+        private readonly IPricingBookDBManager _productTableDB;
+        private readonly ICampaignBackingService campaign;
+       
+        
+        public PriceLogic(IPricingBookDBManager productTableDB, ICampaignBackingService campaignBS)
         {
             _productTableDB = productTableDB;
+            campaign = campaignBS;
+
         }
-
-        public List<PricingBookDTO> GetPricingBooks() {
-
+       
+        public List<PricingBookDTO> GetPricingBooks() { //Reads all Pricing Books, also updates their price based on the active campaign.
+                
             List<PricingBook> allProducts = _productTableDB.GetAll();
             List<PricingBook> filteredListTrue = allProducts.Where(x => (x.Status == true)).ToList();//filtering active list
             List<PricingBook> filteredListFalse = allProducts.Where(x => (x.Status == false)).ToList();//filtering deactivate lists
             List<PricingBookDTO> pricesLists = new List<PricingBookDTO>();
-
-            if(filteredListTrue.Count > 0 && pricesLists.Count == 0)
+            if (filteredListTrue.Count > 0 && pricesLists.Count == 0)
             {
                 foreach (PricingBook pricingBook in filteredListTrue)
                 {
                     fillPriceList(pricesLists, pricingBook);//filling active price list calculating discounts
-
                 }
             }
-
+            
+            CampaignBSDTO campaigns = campaign.GetActiveCampaign().Result;
             //Mapping PricingBook => PricingBookDTO
             foreach (PricingBook pricingBook in filteredListFalse)
             {
@@ -47,20 +50,40 @@ namespace CRM_PricingBooks.BusinessLogic
                     Status = pricingBook.Status,
                     ProductPrices = pricingBook.ProductsList.ConvertAll(product => new ProductPriceDTO
                     {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice,
-                        PromotionPrice = product.FixedPrice
-                    })
-                });
+                            ProductCode = product.ProductCode,
+                            FixedPrice = product.FixedPrice,
+                            PromotionPrice = calculatediscount(product.FixedPrice.ToString(), product.FixedPrice)
+                        })
+                    });
 
-            }           
-
+                }           
             return pricesLists;
+        }
 
+        public PricingBookDTO GetActivePricingBook()
+        {
+            try
+            {
+                List<PricingBookDTO> pricingbooks = GetPricingBooks();
+                foreach (PricingBookDTO active in pricingbooks)
+                {
+                    if (active.Status == true)
+                    {
+                        return active;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new BackingServiceException("Error while getting the active PricingBook. ");
+            }
         }
         
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
-        {           
+        {
+            //Here i recover the active campaign to calculate the discounts
+
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),
@@ -71,7 +94,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
-                    PromotionPrice = calculatediscount("XMAS", product.FixedPrice)
+                    PromotionPrice = calculatediscount(campaign.GetActiveCampaign().Result.Type, product.FixedPrice)
                 })
             });
         }
@@ -87,7 +110,6 @@ namespace CRM_PricingBooks.BusinessLogic
                     _productTableDB.Delete(id);
                     return true;
                 }
-
             }
             return false;
         }
@@ -117,16 +139,17 @@ namespace CRM_PricingBooks.BusinessLogic
                     }
                 }
                 return aux;
-            }
+            }   
         }
         public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
         {
-            PricingBook pbUpdated = new PricingBook();
-
-            //pbUpdated.Id = pricingBookToUpdate.Id;
-            pbUpdated.Name = pricingBookToUpdate.Name;
-            pbUpdated.Description = pricingBookToUpdate.Description;
-            if(pricingBookToUpdate.ProductPrices.Count() != 0)
+            PricingBook pbUpdated = new PricingBook
+            {
+                Id = id,
+                Name = pricingBookToUpdate.Name,
+                Description = pricingBookToUpdate.Description
+            };
+            if (pricingBookToUpdate.ProductPrices.Count() != 0)
                 {
                     pbUpdated.ProductsList = pricingBookToUpdate.ProductPrices.ConvertAll(product => new ProductPrice
                     {
@@ -134,56 +157,26 @@ namespace CRM_PricingBooks.BusinessLogic
                         FixedPrice = product.FixedPrice
                     });
                 }
-            
             PricingBook pbInDB = _productTableDB.Update(pbUpdated, id);
-
-            return new PricingBookDTO()
-            {
-                Id = pbInDB.Id,
-                Name = pbInDB.Name,
-                Description = pbInDB.Description,
-                Status = pbInDB.Status,
-                ProductPrices = pbInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
-                {
-                    ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-                    PromotionPrice = product.FixedPrice
-                })
-
-            };
-
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pbInDB);
         }
 
-        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook) 
+        public PricingBookDTO AddNewListPricingBook(PricingBookDTO newPricingBook)
         {
-            PricingBook pricingBook = new PricingBook();
-            
-            
-            pricingBook.Name = newPricingBook.Name;
-            pricingBook.Description = newPricingBook.Description;
-            pricingBook.Id = SelfGenerationID();
-            pricingBook.Status = false;
-            pricingBook.ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
+            PricingBook pricingBook = new PricingBook
             {
-                ProductCode = product.ProductCode,
-                FixedPrice = product.FixedPrice
-            });
-            
-            PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
-            return new PricingBookDTO()
-            {
-                Id = pricingBookInDB.Id,
-                Name = pricingBookInDB.Name,
-                Description = pricingBookInDB.Description,
-                Status = pricingBookInDB.Status,
-                ProductPrices = pricingBookInDB.ProductsList.ConvertAll(product => new ProductPriceDTO
+                Name = newPricingBook.Name,
+                Description = newPricingBook.Description,
+                Id = SelfGenerationID(),
+                Status = false,
+                ProductsList = newPricingBook.ProductPrices.ConvertAll(product => new ProductPrice
                 {
                     ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice,
-                    PromotionPrice = product.FixedPrice
+                    FixedPrice = product.FixedPrice
                 })
-
-            };
+            };            
+            PricingBook pricingBookInDB = _productTableDB.AddNew(pricingBook);
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
         }
 
         public string DeActivateList(string id)
@@ -203,6 +196,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
             }
             return deactivationMessage;
+            
         }
 
         private string SelfGenerationID()
