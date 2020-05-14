@@ -65,9 +65,9 @@ namespace CRM_PricingBooks.BusinessLogic
 
                 return pricesLists;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while getting PricingBooks: " + ex.Message);
+                throw new BackingServiceException("Error while getting PricingBooks: ");
             }
         }
 
@@ -121,9 +121,9 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while deleting ListProduct, " + ex.Message);
+                throw new BackingServiceException("Error while deleting ListProduct. " );
             }
         }
         
@@ -155,9 +155,9 @@ namespace CRM_PricingBooks.BusinessLogic
                     return aux;
                 }   
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while activating list, " + ex.Message);
+                throw new BackingServiceException("Error while activating list. ");
             }
         }
         public PricingBookDTO UpdateListProduct(PricingBookDTO pricingBookToUpdate, string id)
@@ -182,9 +182,9 @@ namespace CRM_PricingBooks.BusinessLogic
 
                 return DTOUtil.MapPricingBookDatabase_To_DTO(pbInDB);
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while updating listproduct, " + ex.Message);
+                throw new BackingServiceException("Error while updating listproduct. " );
             }
         }
 
@@ -209,9 +209,9 @@ namespace CRM_PricingBooks.BusinessLogic
             
                 return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while adding new ListPricingBook, " + ex.Message);
+                throw new BackingServiceException("Error while adding new ListPricingBook.  ");
     }
 }
 
@@ -234,9 +234,9 @@ namespace CRM_PricingBooks.BusinessLogic
                 }
                 return deactivationMessage;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new BackingServiceException("Error while trying to deactivateList, " + ex.Message);
+                throw new BackingServiceException("Error while trying to deactivateList. " );
             }
         }
 
