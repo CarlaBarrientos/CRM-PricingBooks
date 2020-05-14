@@ -73,40 +73,44 @@ namespace CRM_PricingBooks.Database
                 PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
 
                 //verifying wich fields have to be updated
-                 if (pricingBook != null)
-              {
-                pricingbookToUpdate.Id = id;
+                if (pricingBook != null)
+                {
+                    pricingbookToUpdate.Id = id;
 
-                if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
-                {
-                    pricingbookToUpdate.Name = pricingBook.Name;
-                }
-                else
-                {
-                    pricingBook.Name = pricingbookToUpdate.Name;
-                }
-                if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
-                {
-                    pricingbookToUpdate.Description = pricingBook.Description;
-                }
-                else
-                {
-                    pricingBook.Description = pricingbookToUpdate.Description;
-                }
-                pricingbookToUpdate.Status = pricingBook.Status;
-                if (pricingbookToUpdate.ProductsList.Count() != 0)
-                {
-                    pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                    if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
                     {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice
-                    });
-                }
-              }
+                        pricingbookToUpdate.Name = pricingBook.Name;
+                    }
+                    else
+                    {
+                        pricingBook.Name = pricingbookToUpdate.Name;
+                    }
+                    if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
+                    {
+                        pricingbookToUpdate.Description = pricingBook.Description;
+                    }
+                    else
+                    {
+                        pricingBook.Description = pricingbookToUpdate.Description;
+                    }
+                    pricingbookToUpdate.Status = pricingBook.Status;
+                    if (pricingbookToUpdate.ProductsList.Count() != 0)
+                    {
+                        pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                        {
+                            ProductCode = product.ProductCode,
+                            FixedPrice = product.FixedPrice
+                        });
+                    }
 
-                SaveChanges();
-                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
-                return pricingbookToUpdate;
+
+                    SaveChanges();
+                    Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
+                    return pricingbookToUpdate;
+                }
+                Log.Logger.Error("The " + id + " does not exist in Database. ");
+                  throw new DatabaseException("The Pricing Book does not exist in Database.");
+               
             }
             catch (Exception)
             {
@@ -208,9 +212,10 @@ namespace CRM_PricingBooks.Database
                     }
                     SaveChanges();
                     Log.Logger.Information("Product List was added on PricingBook with id: " + id + " succesfully");
+                    return pricingBook;
                 }
-
-                return pricingBook;
+                Log.Logger.Error("The " + id + " does not exist in Database. ");
+                throw new DatabaseException("The Pricing Book does not exist in Database.");
             }
             catch (Exception )
             {
@@ -224,13 +229,20 @@ namespace CRM_PricingBooks.Database
             try
             {
                 PricingBook pricingbook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(code));
-
-                foreach (ProductPrice productprice in GetProducts(code))
+                if (pricingbook != null)
                 {
-                    pricingbook.ProductsList.Remove(productprice);
-                    SaveChanges();
+                    foreach (ProductPrice productprice in GetProducts(code))
+                    {
+                        pricingbook.ProductsList.Remove(productprice);
+                        SaveChanges();
+                    }
+                    Log.Logger.Information("Product with code: " + code + " was deleted succesfully");
                 }
-                Log.Logger.Information("Product with code: " + code + " was deleted succesfully");
+                else
+                {
+                    Log.Logger.Error("The " + code + " does not exist in Database. ");
+                    throw new DatabaseException("The Pricing Book does not exist in Database.");
+                }
             }
             catch (Exception )
             {
@@ -256,6 +268,11 @@ namespace CRM_PricingBooks.Database
                     }
                     Log.Logger.Information("Product with code: " + productcode + " was deleted succesfully from DB");
                 }
+                else
+                {
+                    Log.Logger.Error("The " + code + " does not exist in Database. ");
+                    throw new DatabaseException("The Pricing Book does not exist in Database.");
+                }
             }
             catch (Exception )
             {
@@ -276,9 +293,12 @@ namespace CRM_PricingBooks.Database
                     {
                         products.Add(product);
                     }
+                    Log.Logger.Information("GetProduct : " + id + " succesfull");
+                    return products;
                 }
-                Log.Logger.Information("GetProduct : " + id + " succesfull");
-                return products;
+                Log.Logger.Error("The " + id + " does not exist in Database. ");
+                throw new DatabaseException("The Pricing Book does not exist in Database.");
+
             }
             catch (Exception )
             {
@@ -296,13 +316,10 @@ namespace CRM_PricingBooks.Database
                     pricingBook.ProductsList = ppToUpdate;
                     SaveChanges();
                     Log.Logger.Information("PricingBook: " + id + " was updated succesfully with the new Product list");
+                    return pricingBook;
                 }
-                else
-                {
-                    Log.Logger.Information("PricingBook: " + id + " was not found, no update realized");
-                }
-
-                return pricingBook;
+                Log.Logger.Error("The " + id + " does not exist in Database. ");
+                throw new DatabaseException("The Pricing Book does not exist in Database.");
             }
             catch (Exception)
             {

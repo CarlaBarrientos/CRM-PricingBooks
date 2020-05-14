@@ -14,7 +14,7 @@ namespace CRM_PricingBooks.BusinessLogic
     public class PriceLogic : IPriceLogic
     {
         private int code = 0;
-        private IPricingBookDBManager _productTableDB;
+        private readonly IPricingBookDBManager _productTableDB;
         private readonly ICampaignBackingService campaign;
        
         
@@ -24,9 +24,7 @@ namespace CRM_PricingBooks.BusinessLogic
             campaign = campaignBS;
 
         }
-        
-        
-
+       
         public List<PricingBookDTO> GetPricingBooks() { //Reads all Pricing Books, also updates their price based on the active campaign.
             try
             { 
@@ -73,23 +71,28 @@ namespace CRM_PricingBooks.BusinessLogic
 
         public PricingBookDTO GetActivePricingBook()
         {
-           List<PricingBookDTO> pricingbooks =  GetPricingBooks();
-            foreach(PricingBookDTO active in pricingbooks)
+            try
             {
-                if (active.Status == true)
+                List<PricingBookDTO> pricingbooks = GetPricingBooks();
+                foreach (PricingBookDTO active in pricingbooks)
                 {
-                    return active;
+                    if (active.Status == true)
+                    {
+                        return active;
+                    }
                 }
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+                throw new BackingServiceException("Error while getting the active PricingBook. ");
+            }
         }
         
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
         {
             //Here i recover the active campaign to calculate the discounts
 
-            
-           
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),

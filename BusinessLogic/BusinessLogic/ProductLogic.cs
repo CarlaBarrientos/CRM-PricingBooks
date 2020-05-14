@@ -61,17 +61,24 @@ namespace CRM_PricingBooks.BusinessLogic
         {
             try { 
                 List<ProductPrice> productPriceupdated = new List<ProductPrice>();
-                foreach(ProductPriceDTO product in productToUpdate){
-                    ProductPrice newproduct = new ProductPrice
+                if (productPriceupdated != null)
+                {
+                    foreach (ProductPriceDTO product in productToUpdate)
                     {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice
-                    };
-                    productPriceupdated.Add(newproduct);
+                        ProductPrice newproduct = new ProductPrice
+                        {
+                            ProductCode = product.ProductCode,
+                            FixedPrice = product.FixedPrice
+                        };
+                        productPriceupdated.Add(newproduct);
+                    }
+                    PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated, id);
+                    return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
                 }
-                PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
-
-                return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
+                else
+                {
+                    throw new BackingServiceException("PricingBook does not exist. ");
+                }
             }
             catch (Exception ex)
             {
