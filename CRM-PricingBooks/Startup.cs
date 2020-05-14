@@ -100,7 +100,7 @@ namespace CRM_PricingBooks
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseExceptionHandlerMiddleware(); //will implement
+            app.UseExceptionHandlerMiddleware(); 
 
             app.UseRouting();
 

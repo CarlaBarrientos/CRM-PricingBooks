@@ -24,9 +24,10 @@ namespace CRM_PricingBooks.Database
         public readonly ILogger<PricingBookDBManager> _logger;
 
 
-        public PricingBookDBManager(IConfiguration config)
+        public PricingBookDBManager(IConfiguration config, ILogger<PricingBookDBManager> logger)
         {
             _configuration = config;
+            _logger = logger;
             InitDBContext();
         }
         public void InitDBContext()

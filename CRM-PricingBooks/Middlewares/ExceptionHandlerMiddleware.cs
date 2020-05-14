@@ -39,6 +39,7 @@ namespace CRM_PricingBooks.Middlewares
         {
             int httpStatusCode;
             string messageToShow;
+
             if (ex is BackingServiceException) //There was an error in service conection
             {
                 httpStatusCode = (int)HttpStatusCode.ServiceUnavailable;
