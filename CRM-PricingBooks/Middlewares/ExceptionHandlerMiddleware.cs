@@ -71,7 +71,7 @@ namespace CRM_PricingBooks.Middlewares
                 message = messageToShow
             };
 
-            Log.Logger.Error("Error detected" + httpStatusCode);
+            Log.Logger.Error("Error detected " + httpStatusCode +": " + messageToShow);
             // httpContext.Response.StatusCode = httpStatusCode;
             return httpContext.Response.WriteAsync(JsonConvert.SerializeObject(errorModel));
         }
