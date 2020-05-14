@@ -19,8 +19,8 @@ namespace Services
         }
         public async Task<List<CampaignBSDTO>> GetAllCampaigns()
         {
-            try
-            {
+            //try
+            //{
                 // Creating HTTP Client
                 HttpClient CampaignsMS = new HttpClient();
                
@@ -31,6 +31,7 @@ namespace Services
                 HttpResponseMessage response = await CampaignsMS.GetAsync($"{msPath}/api/campaigns");
                 
                 int statusCode = (int)response.StatusCode;
+                Log.Logger.Error("http code recorded is: " + statusCode );
                 if (statusCode == 200) // OK
                 {
                     // Read ASYNC response from HTTPResponse 
@@ -44,15 +45,15 @@ namespace Services
                 else
                 {
                     // something wrong happens!
-                    Log.Logger.Information("Error, exception with http code" + statusCode + " was detected");
+                    Log.Logger.Error("Error, exception with http code" + statusCode + " was detected");
                     throw new BackingServiceException("BS throws the error: " + statusCode);
-                }
+                }/*
             }
             catch (Exception ex)
             {
-                Log.Logger.Information("Error, exception "+ex.Message + " was detected");
+                Log.Logger.Error("Error, exception "+ex.Message + " was detected");
                 throw new BackingServiceException("Connection with Campaigns is not working: " + ex.Message);
-            }
+            }*/
         }
     }
 }

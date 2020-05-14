@@ -7,8 +7,6 @@ using CRM_PricingBooks.Database;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database.Models;
 using BusinessLogic.DTOModels;
-using Services.Exceptions;
-using Serilog;
 
 namespace CRM_PricingBooks.BusinessLogic
 {
@@ -23,115 +21,72 @@ namespace CRM_PricingBooks.BusinessLogic
 
         public PricingBookDTO AddNewProduct(List<ProductPriceDTO> newProduct, string id) //Create new product 
         {
-            try { 
-                List<ProductPrice> newProductPrice = new List<ProductPrice>(); //DTO -> Database
-
-                foreach(ProductPriceDTO productPrice in newProduct)
-                {
-                    newProductPrice.Add(new ProductPrice()
-                    {
-                        ProductCode = productPrice.ProductCode,
-                        FixedPrice = productPrice.FixedPrice
-                    });
-                }
-            
-                PricingBook pricingBookInDB = _productTableDB.AddNewProduct(newProductPrice, id);
-            
-                return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
-            }
-            catch (Exception ex)
+            List<ProductPrice> newProductPrice = new List<ProductPrice>(); //DTO -> Database
+            foreach(ProductPriceDTO productPrice in newProduct)
             {
-                Log.Logger.Error("Failed to Add List product with id: " + id);
-                throw new BackingServiceException("Error while adding the newproduct" + ex.Message);
+                newProductPrice.Add(new ProductPrice()
+                {
+                    ProductCode = productPrice.ProductCode,
+                    FixedPrice = productPrice.FixedPrice
+                });
             }
+            PricingBook pricingBookInDB = _productTableDB.AddNewProduct(newProductPrice, id);
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
         }
 
         public List<ProductPriceDTO> GetProducts(string id)
         {
-            try { 
-                List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
-                return DTOUtil.MapProductListDatabase_To_DTOList(allProducts);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error("Failed to Get List products with id: " + id);
-                throw new BackingServiceException("Error while getting products" + ex.Message);
-            }
+            List<ProductPrice> allProducts = _productTableDB.GetProducts(id);
+            return DTOUtil.MapProductListDatabase_To_DTOList(allProducts);
         }
 
 
         public PricingBookDTO UpdateProduct(List <ProductPriceDTO> productToUpdate,string id)
         {
-            try { 
-                List<ProductPrice> productPriceupdated = new List<ProductPrice>();
-                foreach(ProductPriceDTO product in productToUpdate){
-                    ProductPrice newproduct = new ProductPrice
-                    {
-                        ProductCode = product.ProductCode,
-                        FixedPrice = product.FixedPrice
-                    };
-                    productPriceupdated.Add(newproduct);
-                }
-                PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
+            List<ProductPrice> productPriceupdated = new List<ProductPrice>();
+            foreach(ProductPriceDTO product in productToUpdate){
+                ProductPrice newproduct = new ProductPrice
+                {
+                    ProductCode = product.ProductCode,
+                    FixedPrice = product.FixedPrice
+                };
+                productPriceupdated.Add(newproduct);
+            }
+            PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
 
-                return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error("Failed to Update product with id: " + id);
-                throw new BackingServiceException("error while updating product" + ex.Message);
-            }
+            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
         }
 
          public string DeleteProduct(string code)
          {
-            try { 
-               string aux = "";
-               List<ProductPriceDTO> priceslist = GetProducts(code);
+            string aux = "";
+            List<ProductPriceDTO> priceslist = GetProducts(code);
 
-                foreach (ProductPriceDTO productprice in priceslist)
-                {
-                    priceslist.Remove(productprice);
-                    _productTableDB.DeleteProduct(code);
-                     aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
-                    return aux;
-                }
-                aux = "PRICE LIST DOES NOT EXIST ";
-                Log.Logger.Information("Product with code: " + code+" do not exist");
-       
+            foreach (ProductPriceDTO productprice in priceslist)
+            {
+                priceslist.Remove(productprice);
+                _productTableDB.DeleteProduct(code);
+                    aux = "PRICE LIST EXISTS AND PRODUCTS INSIDE WILL BE REMOVED ";
                 return aux;
             }
-            catch (Exception ex)
-            {
-                Log.Logger.Error("Failed to Delete product by id with code: " + code);
-                throw new BackingServiceException("error while deleting product" + ex.Message);
-            }
-        }
+            aux = "PRICE LIST DOES NOT EXIST ";
+            return aux;
+         }
         public string DeleteProductbyId(string code, string productcode){
-            try { 
-                 string aux = "";
-                 List<ProductPriceDTO> priceslist = GetProducts(code);
-                 foreach (ProductPriceDTO productpricedto in priceslist)
-                 {
-                     if(productpricedto.ProductCode.Equals(productcode))
-                      {
-                        priceslist.Remove(productpricedto);
-                        _productTableDB.DeleteProductCode(code,productcode);
-                         aux = "PRICE LIST AND PRODUCTCODE EXIST, WILL BE REMOVED";
-                        return aux;
-                     }
-
-                }
-                Log.Logger.Information("Product with productcode: " + productcode+" do not exist");
-                aux = "PRICE LIST AND PRODUCTCODE DO NOT EXIST ";
-       
-                 return aux;
-            }
-            catch (Exception ex)
+            string aux = "";
+            List<ProductPriceDTO> priceslist = GetProducts(code);
+            foreach (ProductPriceDTO productpricedto in priceslist)
             {
-                Log.Logger.Error("Failed to Delete product by id with productcode: " + productcode);
-                throw new BackingServiceException("error while updating product by id" + ex.Message);
+                if(productpricedto.ProductCode.Equals(productcode))
+                {
+                priceslist.Remove(productpricedto);
+                _productTableDB.DeleteProductCode(code,productcode);
+                    aux = "PRICE LIST AND PRODUCTCODE EXIST, WILL BE REMOVED";
+                return aux;
+                }
             }
+            aux = "PRICE LIST AND PRODUCTCODE DO NOT EXIST ";
+            return aux;
         }
     }
 }

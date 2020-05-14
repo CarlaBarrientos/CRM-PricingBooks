@@ -100,18 +100,13 @@ namespace CRM_PricingBooks
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseExceptionHandlerMiddleware(); //will implement
-
-            // app.UseHsts();  //will not use
-            //app.UseHttpsRedirection();  //will not use probably
+            app.UseExceptionHandlerMiddleware(); //will implement
 
             app.UseRouting();
 
             app.UseCors("AllowAll");
 
             app.UseAuthorization();
-
-            //app.UseAuthenticationMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
