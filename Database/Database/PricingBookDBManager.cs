@@ -105,10 +105,10 @@ namespace CRM_PricingBooks.Database
                                 FixedPrice = product.FixedPrice
                             });
                     }
-                    SaveChanges();
-                    Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
-                    return pricingbookToUpdate;
                 }
+                SaveChanges();
+                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
+                return pricingbookToUpdate;
             }
             catch (Exception ex)
             {
@@ -117,6 +117,7 @@ namespace CRM_PricingBooks.Database
                 throw new DatabaseException("Error while updating a Pricing Book to Database.");
             }
         }
+
         public void Delete(string id)
         {
             try
