@@ -59,13 +59,6 @@ namespace CRM_PricingBooks.BusinessLogic
                     });
 
                 }           
-
-                return pricesLists;
-            }
-            catch (Exception )
-            {
-                throw new BackingServiceException("Error while getting PricingBooks: ");
-            }
             return pricesLists;
         }
 

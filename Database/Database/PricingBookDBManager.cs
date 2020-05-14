@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CRM_PricingBooks.Database;
 using CRM_PricingBooks.Database.Models;
 using Database.Database.Models;
 using Microsoft.Extensions.Configuration;
@@ -75,41 +76,39 @@ namespace CRM_PricingBooks.Database
                 PricingBook pricingBook = _pricingBookList.FirstOrDefault(d => d.Id.Equals(id));
 
                 //verifying wich fields have to be updated
-                 if (pricingBook != null)
-              {
-                pricingbookToUpdate.Id = id;
+                if (pricingBook != null)
+                {
+                    pricingbookToUpdate.Id = id;
 
-                if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
-                {
-                    pricingbookToUpdate.Name = pricingBook.Name;
-                }
-                else
-                {
-                    pricingBook.Name = pricingbookToUpdate.Name;
-                }
-                if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
-                {
-                    pricingbookToUpdate.Description = pricingBook.Description;
-                }
-                else
-                {
-                    pricingBook.Description = pricingbookToUpdate.Description;
-                }
-                pricingbookToUpdate.Status = pricingBook.Status;
-                if (pricingbookToUpdate.ProductsList.Count() != 0)
-                {
-                    pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
-                   {
-                            ProductCode = product.ProductCode,
-                            FixedPrice = product.FixedPrice
-                        });
+                    if (string.IsNullOrEmpty(pricingbookToUpdate.Name))
+                    {
+                        pricingbookToUpdate.Name = pricingBook.Name;
                     }
+                    else
+                    {
+                        pricingBook.Name = pricingbookToUpdate.Name;
+                    }
+                    if (string.IsNullOrEmpty(pricingbookToUpdate.Description))
+                    {
+                        pricingbookToUpdate.Description = pricingBook.Description;
+                    }
+                    else
+                    {
+                        pricingBook.Description = pricingbookToUpdate.Description;
+                    }
+                    pricingbookToUpdate.Status = pricingBook.Status;
+                    if (pricingbookToUpdate.ProductsList.Count() != 0)
+                    {
+                        pricingBook.ProductsList = pricingbookToUpdate.ProductsList.ConvertAll(product => new ProductPrice
+                       {
+                                ProductCode = product.ProductCode,
+                                FixedPrice = product.FixedPrice
+                            });
+                    }
+                    SaveChanges();
+                    Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
+                    return pricingbookToUpdate;
                 }
-              }
-
-                SaveChanges();
-                Log.Logger.Information("Updated PricingBook: " + pricingbookToUpdate.Id + " succesfully.");
-                return pricingbookToUpdate;
             }
             catch (Exception ex)
             {
@@ -156,7 +155,7 @@ namespace CRM_PricingBooks.Database
                     }
                 }
             }
-            catch (Exception es)
+            catch (Exception ex)
             {
                 Log.Logger.Error("Error while activating PricingBook with id: " + id+ "  in Database.");
                 throw new BackingServiceException("Error while activating list, " + ex.Message);
