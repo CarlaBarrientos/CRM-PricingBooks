@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Services.Exceptions;
 using CRM_PricingBooks.Database;
 using CRM_PricingBooks.DTOModels;
 using CRM_PricingBooks.Database.Models;
@@ -43,8 +43,8 @@ namespace CRM_PricingBooks.BusinessLogic
 
         public PricingBookDTO UpdateProduct(List <ProductPriceDTO> productToUpdate,string id)
         {
-<<<<<<< HEAD
-            try { 
+
+            try {
                 List<ProductPrice> productPriceupdated = new List<ProductPrice>();
                 if (productPriceupdated != null)
                 {
@@ -68,20 +68,7 @@ namespace CRM_PricingBooks.BusinessLogic
             catch (Exception ex)
             {
                 throw new BackingServiceException("error while updating product" + ex.Message);
-=======
-            List<ProductPrice> productPriceupdated = new List<ProductPrice>();
-            foreach(ProductPriceDTO product in productToUpdate){
-                ProductPrice newproduct = new ProductPrice
-                {
-                    ProductCode = product.ProductCode,
-                    FixedPrice = product.FixedPrice
-                };
-                productPriceupdated.Add(newproduct);
->>>>>>> 9a520414443d64221d77052c2e39ce6d43f36ca3
             }
-            PricingBook pricingBookInDB = _productTableDB.UpdateProduct(productPriceupdated , id);
-
-            return DTOUtil.MapPricingBookDatabase_To_DTO(pricingBookInDB);
         }
 
          public string DeleteProduct(string code)
