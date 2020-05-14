@@ -43,7 +43,7 @@ namespace CRM_PricingBooks.BusinessLogic
                     }
                 }
             
-                List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
+                CampaignBSDTO campaigns = campaign.GetActiveCampaign().Result;
                 //Mapping PricingBook => PricingBookDTO
                 foreach (PricingBook pricingBook in filteredListFalse)
                 {
@@ -57,7 +57,7 @@ namespace CRM_PricingBooks.BusinessLogic
                         {
                             ProductCode = product.ProductCode,
                             FixedPrice = product.FixedPrice,
-                            PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
+                            PromotionPrice = calculatediscount(product.FixedPrice.ToString(), product.FixedPrice)
                         })
                     });
 
@@ -70,13 +70,26 @@ namespace CRM_PricingBooks.BusinessLogic
                 throw new BackingServiceException("Error while getting PricingBooks: " + ex.Message);
             }
         }
+
+        public PricingBookDTO GetActivePricingBook()
+        {
+           List<PricingBookDTO> pricingbooks =  GetPricingBooks();
+            foreach(PricingBookDTO active in pricingbooks)
+            {
+                if (active.Status == true)
+                {
+                    return active;
+                }
+            }
+            return null;
+        }
         
         private void fillPriceList(List<PricingBookDTO> pricesLists, PricingBook pricingBook)
         {
             //Here i recover the active campaign to calculate the discounts
 
             
-            List<CampaignBSDTO> campaigns = campaign.GetAllCampaigns().Result;
+           
             pricesLists.Add(new PricingBookDTO()
             {
                 Id = pricingBook.Id.ToString(),
@@ -87,7 +100,7 @@ namespace CRM_PricingBooks.BusinessLogic
                 {
                     ProductCode = product.ProductCode,
                     FixedPrice = product.FixedPrice,
-                    PromotionPrice = calculatediscount(campaigns[0].Type, product.FixedPrice)
+                    PromotionPrice = calculatediscount(campaign.GetActiveCampaign().Result.Type, product.FixedPrice)
                 })
             });
         }
